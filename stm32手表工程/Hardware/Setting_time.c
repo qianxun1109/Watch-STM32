@@ -7,126 +7,17 @@
 
 uint8_t timeflag = 1;
 
-//为了处理进位的问题，分别创建独立函数处理
-void change_year(uint8_t sign)
+//更改RTC内部时间戳
+//sign:按键键码 object:更改目标对象
+void change_RTCtime(uint8_t sign,uint8_t object)
 {
-	MyRTC_Readtime();
-	if(sign == 1)MyRTC_Time[0]++;
-	else if(sign == 2)MyRTC_Time[0]--;
-	MyRTC_SetTime();
+//注：对数组的加减只是用于显示的值，数组的值根本来源于RTCcounter，要多一步利用数组的值重调RTC计数器
+	MyRTC_Readtime();//载入最新的时间
+	if(sign == 1)MyRTC_Time[object]++;
+	else if(sign == 2)MyRTC_Time[object]--;
+	MyRTC_SetTime();//调整RTCcounter的值
 }
-void change_month(uint8_t sign)
-{
-	MyRTC_Readtime();
-	if(MyRTC_Time[1] > 1 && MyRTC_Time[1] < 12)
-	{
-		if(sign == 1)MyRTC_Time[1]++;
-		else if(sign == 2)MyRTC_Time[1]--;
-	}
-	else if(MyRTC_Time[1] == 1)
-	{
-		if(sign == 1)MyRTC_Time[1]++;
-		else if(sign == 2)MyRTC_Time[1]=12;
-	}
-	else if(MyRTC_Time[1] == 12)
-	{
-		if(sign == 1)MyRTC_Time[1]=1;
-		else if(sign == 2)MyRTC_Time[1]--;
-	}
-	MyRTC_SetTime();
-}
-void change_day(uint8_t sign)
-{
-	MyRTC_Readtime();
-	if(MyRTC_Time[2] > 1 && MyRTC_Time[2] < 31)
-	{
-		if(sign == 1)MyRTC_Time[2]++;
-		else if(sign == 2)MyRTC_Time[2]--;
-	}
-	else if(MyRTC_Time[2] == 1)
-	{
-		if(sign == 1)MyRTC_Time[2]++;
-		else if(sign == 2)MyRTC_Time[2]=31;
-	}
-	else if(MyRTC_Time[2] == 31)
-	{
-		if(sign == 1)MyRTC_Time[2]=1;
-		else if(sign == 2)MyRTC_Time[2]--;
-	}
-	MyRTC_SetTime();
-}
-void change_hour(uint8_t sign)
-{
-	MyRTC_Readtime();
-	if(MyRTC_Time[3] > 0 && MyRTC_Time[3] < 23)
-	{
-		if(sign == 1)MyRTC_Time[3]++;
-		else if(sign == 2)MyRTC_Time[3]--;
-	}
-	else if(MyRTC_Time[3] == 0)
-	{
-		if(sign == 1)MyRTC_Time[3]++;
-		else if(sign == 2)MyRTC_Time[3]=23;
-	}
-	else if(MyRTC_Time[3] == 23)
-	{
-		if(sign == 1)MyRTC_Time[3]=0;
-		else if(sign == 2)MyRTC_Time[3]--;
-	}
-	MyRTC_SetTime();
-}
-void change_minute(uint8_t sign)
-{
-	MyRTC_Readtime();
-	if(MyRTC_Time[4] > 0 && MyRTC_Time[4] < 59)
-	{
-		if(sign == 1)MyRTC_Time[4]++;
-		else if(sign == 2)MyRTC_Time[4]--;
-	}
-	else if(MyRTC_Time[4] == 0)
-	{
-		if(sign == 1)MyRTC_Time[4]++;
-		else if(sign == 2)MyRTC_Time[4]=59;
-	}
-	else if(MyRTC_Time[4] == 59)
-	{
-		if(sign == 1)MyRTC_Time[4]=0;
-		else if(sign == 2)MyRTC_Time[4]--;
-	}
-	MyRTC_SetTime();
-}
-void change_second(uint8_t sign)
-{
-	MyRTC_Readtime();
-	if(MyRTC_Time[5] > 0 && MyRTC_Time[5] < 59)
-	{
-		if(sign == 1)MyRTC_Time[5]++;
-		else if(sign == 2)MyRTC_Time[5]--;
-	}
-	else if(MyRTC_Time[5] == 0)
-	{
-		if(sign == 1)MyRTC_Time[5]++;
-		else if(sign == 2)MyRTC_Time[5]=59;
-	}
-	else if(MyRTC_Time[5] == 59)
-	{
-		if(sign == 1)MyRTC_Time[5]=0;
-		else if(sign == 2)MyRTC_Time[5]--;
-	}
-	MyRTC_SetTime();
-}
-
-//示例讲解（废弃）
-////更改RTC内部时间戳
-////sign:按键键码 object:更改目标对象
-//void change_RTCtime(uint8_t sign,uint8_t object)
-//{
-////注：对数组的加减只是用于显示的值，数组的值根本来源于RTCcounter，要多一步利用数组的值重调RTC计数器
-//	MyRTC_Readtime();//载入最新的时间
-//	if(sign == 1)MyRTC_Time[object]++;
-//	else if(sign == 2)MyRTC_Time[object]--;
-//	MyRTC_SetTime();//调整RTCcounter的值
-//}
+//无需关注进位等问题，localtime函数内部会解决
 
 void Show_Setting_Time_UI1(void)
 {
@@ -165,8 +56,8 @@ uint8_t SetTime(uint8_t flag)
 			OLED_ReverseArea(32,16,8*4,16);//年含4位数
 			OLED_Update();
 			uint8_t num=Key_GetNum();//键码变换
-			if(num == 1)change_year(1);
-			else if(num == 2)change_year(2);
+			if(num == 1)change_RTCtime(1,0);
+			else if(num == 2)change_RTCtime(2,0);
 			else if(num == 3)return 3;//更改成功
 		}
 	}
@@ -178,8 +69,8 @@ uint8_t SetTime(uint8_t flag)
 			OLED_ReverseArea(32,32,8*2,16);
 			OLED_Update();
 			uint8_t num=Key_GetNum();
-			if(num == 1)change_month(1);
-			else if(num == 2)change_month(2);
+			if(num == 1)change_RTCtime(1,1);
+			else if(num == 2)change_RTCtime(2,1);
 			else if(num == 3)return 4;
 		}
 	}
@@ -191,8 +82,8 @@ uint8_t SetTime(uint8_t flag)
 			OLED_ReverseArea(32,48,8*2,16);
 			OLED_Update();
 			uint8_t num=Key_GetNum();
-			if(num == 1)change_day(1);
-			else if(num == 2)change_day(2);
+			if(num == 1)change_RTCtime(1,2);
+			else if(num == 2)change_RTCtime(2,2);
 			else if(num == 3)return 5;
 		}
 	}
@@ -204,8 +95,8 @@ uint8_t SetTime(uint8_t flag)
 			OLED_ReverseArea(32,0,8*2,16);
 			OLED_Update();
 			uint8_t num=Key_GetNum();
-			if(num == 1)change_hour(1);
-			else if(num == 2)change_hour(2);
+			if(num == 1)change_RTCtime(1,3);
+			else if(num == 2)change_RTCtime(2,3);
 			else if(num == 3)return 6;
 		}
 	}
@@ -217,8 +108,8 @@ uint8_t SetTime(uint8_t flag)
 			OLED_ReverseArea(32,16,8*2,16);
 			OLED_Update();
 			uint8_t num=Key_GetNum();
-			if(num == 1)change_minute(1);
-			else if(num == 2)change_minute(2);
+			if(num == 1)change_RTCtime(1,4);
+			else if(num == 2)change_RTCtime(2,4);
 			else if(num == 3)return 7;
 		}
 	}
@@ -230,8 +121,8 @@ uint8_t SetTime(uint8_t flag)
 			OLED_ReverseArea(32,32,8*2,16);
 			OLED_Update();
 			uint8_t num=Key_GetNum();
-			if(num == 1)change_second(1);
-			else if(num == 2)change_second(2);
+			if(num == 1)change_RTCtime(1,5);
+			else if(num == 2)change_RTCtime(2,5);
 			else if(num == 3)return 8;
 		}
 	}
