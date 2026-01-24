@@ -38,98 +38,21 @@ void change_month(uint8_t sign)
 void change_day(uint8_t sign)
 {
 	MyRTC_Readtime();
-	//闰年判断
-	uint8_t yearflag = 0;
-	if((MyRTC_Time[0]%4 == 0 && MyRTC_Time[0]%100 != 0) || MyRTC_Time[0]%400 == 0)yearflag = 2;//闰年
-	else yearflag = 1;
-	//日期分类处理
-	switch(MyRTC_Time[1])
+	if(MyRTC_Time[2] > 1 && MyRTC_Time[2] < 31)
 	{
-		case 1:
-		case 3:
-		case 5:
-		case 7:
-		case 8:
-		case 10:
-		case 12:
-			if(MyRTC_Time[2] > 1 && MyRTC_Time[2] < 31)
-			{
-            	if(sign == 1)MyRTC_Time[2]++;
-		    	else if(sign == 2)MyRTC_Time[2]--;
-		    }
-		    else if(MyRTC_Time[2] == 1)
-		    {
-		    	if(sign == 1)MyRTC_Time[2]++;
-		    	else if(sign == 2)MyRTC_Time[2]=31;
-		    }
-		    else if(MyRTC_Time[2] == 31)
-		    {
-		    	if(sign == 1)MyRTC_Time[2]=1;
-		    	else if(sign == 2)MyRTC_Time[2]--;
-			}   
-			break;
-		case 4:
-		case 6:	
-		case 9:	
-		case 11:
-			if(MyRTC_Time[2] > 1 && MyRTC_Time[2] < 30)
-			{
-            	if(sign == 1)MyRTC_Time[2]++;
-		    	else if(sign == 2)MyRTC_Time[2]--;
-		    }
-		    else if(MyRTC_Time[2] == 1)
-		    {
-		    	if(sign == 1)MyRTC_Time[2]++;
-		    	else if(sign == 2)MyRTC_Time[2]=30;
-		    }
-		    else if(MyRTC_Time[2] == 30)
-		    {
-		    	if(sign == 1)MyRTC_Time[2]=1;
-		    	else if(sign == 2)MyRTC_Time[2]--;
-			}   
-			break;
-		case 2:
-			if(yearflag == 1)
-			{
-				if(MyRTC_Time[2] > 1 && MyRTC_Time[2] < 28)
-				{
-					if(sign == 1)MyRTC_Time[2]++;
-					else if(sign == 2)MyRTC_Time[2]--;
-				}
-				else if(MyRTC_Time[2] == 1)
-				{
-					if(sign == 1)MyRTC_Time[2]++;
-					else if(sign == 2)MyRTC_Time[2]=28;
-				}
-				else if(MyRTC_Time[2] == 28)
-				{
-					if(sign == 1)MyRTC_Time[2]=1;
-					else if(sign == 2)MyRTC_Time[2]--;
-				}   
-				break;
-			}
-			else if(yearflag == 2)
-			{
-				if(MyRTC_Time[2] > 1 && MyRTC_Time[2] < 29)
-				{
-					if(sign == 1)MyRTC_Time[2]++;
-					else if(sign == 2)MyRTC_Time[2]--;
-				}
-				else if(MyRTC_Time[2] == 1)
-				{
-					if(sign == 1)MyRTC_Time[2]++;
-					else if(sign == 2)MyRTC_Time[2]=29;
-				}
-				else if(MyRTC_Time[2] == 29)
-				{
-					if(sign == 1)MyRTC_Time[2]=1;
-					else if(sign == 2)MyRTC_Time[2]--;
-				}   
-				break;
-			}
-		default:
-			break;
-	} 
+		if(sign == 1)MyRTC_Time[2]++;
+		else if(sign == 2)MyRTC_Time[2]--;
+	}
+	else if(MyRTC_Time[2] == 1)
+	{
+		if(sign == 1)MyRTC_Time[2]++;
+		else if(sign == 2)MyRTC_Time[2]=31;
+	}
+	else if(MyRTC_Time[2] == 31)
+	{
+		if(sign == 1)MyRTC_Time[2]=1;
+		else if(sign == 2)MyRTC_Time[2]--;
+	}
 	MyRTC_SetTime();
 }
 void change_hour(uint8_t sign)
@@ -193,17 +116,17 @@ void change_second(uint8_t sign)
 	MyRTC_SetTime();
 }
 
-
-//更改RTC内部时间戳
-//sign:按键键码 object:更改目标对象
-void change_RTCtime(uint8_t sign,uint8_t object)
-{
-//注：对数组的加减只是用于显示的值，数组的值根本来源于RTCcounter，要多一步利用数组的值重调RTC计数器
-	MyRTC_Readtime();//载入最新的时间
-	if(sign == 1)MyRTC_Time[object]++;
-	else if(sign == 2)MyRTC_Time[object]--;
-	MyRTC_SetTime();//调整RTCcounter的值
-}
+//示例讲解（废弃）
+////更改RTC内部时间戳
+////sign:按键键码 object:更改目标对象
+//void change_RTCtime(uint8_t sign,uint8_t object)
+//{
+////注：对数组的加减只是用于显示的值，数组的值根本来源于RTCcounter，要多一步利用数组的值重调RTC计数器
+//	MyRTC_Readtime();//载入最新的时间
+//	if(sign == 1)MyRTC_Time[object]++;
+//	else if(sign == 2)MyRTC_Time[object]--;
+//	MyRTC_SetTime();//调整RTCcounter的值
+//}
 
 void Show_Setting_Time_UI1(void)
 {
