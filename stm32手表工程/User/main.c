@@ -1,0 +1,45 @@
+#include "stm32f10x.h"                  // Device header
+#include "OLED.h"
+#include "MyRTC.h"
+#include "MPU6050.h"
+#include "menu.h"
+#include "Key.h"
+#include "Scheduler.h"
+#include "Setting_time.h"
+
+uint8_t Pageflag = CLOCK;
+
+int main(void)
+{
+	Timer_Init();
+	OLED_Init();
+	MyRTC_Init();
+	Key_Init();
+	MPU6050_Init();
+	Scheduler_Init();
+
+	
+	OLED_Update();
+	while (1)
+	{
+		switch(Pageflag)
+		{
+			case CLOCK:
+				Pageflag = (Page)CLK_Page();
+				break;
+			case SETTING:
+				Pageflag = (Page)Setting_Page();
+				break;
+			case MENU:
+				//Menu_Page();
+				break;
+			case SETTING_TIME:
+				Pageflag = (Page)Setting_time_Page();
+				break;
+			default:
+				break;
+			
+			
+		}
+	}
+}

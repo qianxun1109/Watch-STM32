@@ -1,0 +1,88 @@
+#include "stm32f10x.h"                  // Device header
+#include "Key.h"
+#include "menu.h"
+
+uint32_t scheduler_tick;
+uint8_t task_num;
+
+typedef struct task{
+	void(*task)(void);
+	uint8_t cycle;
+	uint32_t last_run;
+}task_t;
+
+task_t tasks[]={
+{Show_pageflag_proc,100,0}
+
+
+};
+
+void Timer_Init(void)//Enable TIM1 to start the systick
+{
+	/*开启时钟*/
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE);			
+	
+	/*配置时钟源*/
+	TIM_InternalClockConfig(TIM1);		
+	
+	/*时基单元初始化*/
+	TIM_TimeBaseInitTypeDef TIM_TimeBaseInitStructure;				
+	TIM_TimeBaseInitStructure.TIM_ClockDivision = TIM_CKD_DIV1;		//时钟分频，选择不分频，此参数用于配置滤波器时钟，不影响时基单元功能
+	TIM_TimeBaseInitStructure.TIM_CounterMode = TIM_CounterMode_Up;	
+	TIM_TimeBaseInitStructure.TIM_Period = 1000 - 1;				
+	TIM_TimeBaseInitStructure.TIM_Prescaler = 72 - 1;				
+	TIM_TimeBaseInitStructure.TIM_RepetitionCounter = 0;			
+	TIM_TimeBaseInit(TIM1, &TIM_TimeBaseInitStructure);				
+	
+	/*中断输出配置*/
+	TIM_ClearFlag(TIM1, TIM_FLAG_Update);		
+	
+	TIM_ITConfig(TIM1, TIM_IT_Update, ENABLE);					
+	
+	/*NVIC中断分组*/
+	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);				//若有多个中断，可以把此代码放在main函数内，while循环之前
+																//若调用多次配置分组的代码，则后执行的配置会覆盖先执行的配置
+	
+	/*NVIC配置*/
+	NVIC_InitTypeDef NVIC_InitStructure;						
+	NVIC_InitStructure.NVIC_IRQChannel = TIM1_UP_IRQn;//  < --TIM1特别	
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;				
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;	
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;			
+	NVIC_Init(&NVIC_InitStructure);								
+	
+	/*TIM使能*/
+	TIM_CtrlPWMOutputs(TIM1, ENABLE);		//<<-----使用TIM1要多这行代码
+	TIM_Cmd(TIM1, ENABLE);									
+}
+//定时器中断函数，可以复制到使用它的地方
+void TIM1_UP_IRQHandler(void)		//<<-----使用TIM1要注意中断名不一样
+{
+	if (TIM_GetITStatus(TIM1, TIM_IT_Update) == SET)	//<<-----使用TIM1要注意中断标志位也不一样
+	{
+		scheduler_tick++;
+		
+		Key_Tick();
+		
+		TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
+	}
+}
+
+void Scheduler_Init(void)
+{
+	task_num=sizeof(tasks)/sizeof(tasks[0]);	
+}
+
+void Scheduler_run(void)
+{
+	uint8_t i;
+	for(i=0;i<task_num;i++)
+	{
+		if(tasks[i].last_run+tasks[i].cycle < scheduler_tick)
+		{
+			tasks[i].last_run=scheduler_tick;
+			tasks[i].task();
+		}
+	}
+}
+
