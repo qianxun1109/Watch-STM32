@@ -129,7 +129,7 @@ uint8_t SetTime(uint8_t flag)
 	return 0;
 }
 
-uint8_t Setting_time_Page(void)
+Page Setting_time_Page(void)
 {
 	OLED_Clear();//涉及界面切换要先清屏
 	Show_Setting_Time_UI1();
@@ -151,7 +151,7 @@ uint8_t Setting_time_Page(void)
 		{
 			OLED_Clear();		//清屏，为新页面显示准备
 			//OLED_Update();		
-			if(timeflag == 2)return 3;//跳出循环,切换页面(3是SETTING的枚举值)
+			if(timeflag == 2)return SETTING;//跳出循环,切换页面(3是SETTING的枚举值)
 			else if(timeflag >= 3 && timeflag <= 8)
 			{
 				SetTime(timeflag);

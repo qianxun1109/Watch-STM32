@@ -34,3 +34,4 @@
 .\objects\menu.o: Hardware\Key.h
 .\objects\menu.o: .\System\Scheduler.h
 .\objects\menu.o: Hardware\Setting_time.h
+.\objects\menu.o: Hardware\menu.h

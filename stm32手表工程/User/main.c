@@ -25,17 +25,30 @@ int main(void)
 		switch(Pageflag)
 		{
 			case CLOCK:
-				Pageflag = (Page)CLK_Page();
+				Pageflag = CLK_Page();
 				break;
 			case SETTING:
-				Pageflag = (Page)Setting_Page();
+				Pageflag = Setting_Page();
 				break;
 			case MENU:
-				//Menu_Page();
+				Pageflag = Menu_Page();
 				break;
 			case SETTING_TIME:
-				Pageflag = (Page)Setting_time_Page();
+				Pageflag = Setting_time_Page();
 				break;
+			case MENU_TIMER:
+				//Pageflag = Menu_timer_Page();
+				break;
+			case MENU_ALARM:
+				//Pageflag = Menu_alarm_Page();
+				break;
+			case MENU_LIGHT:
+				//Pageflag = Menu_light_Page();
+				break;
+			case MENU_GAME:
+				//Pageflag = Menu_game_time_Page();
+				break;
+			
 			default:
 				break;
 			

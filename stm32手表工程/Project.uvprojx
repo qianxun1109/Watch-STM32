@@ -740,6 +740,16 @@
               <FileType>5</FileType>
               <FilePath>.\Hardware\Setting_time.h</FilePath>
             </File>
+            <File>
+              <FileName>Menu_list1.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\Menu_list1.c</FilePath>
+            </File>
+            <File>
+              <FileName>Menu_list1.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Hardware\Menu_list1.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

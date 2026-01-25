@@ -4,13 +4,13 @@
 #include "Key.h"
 #include "Scheduler.h"
 #include "Setting_time.h"
-
-uint8_t clkflag=1;
-uint8_t settingflag=1;
-
-
+#include "menu.h"
+#include "OLED_Data.h"
 
 /*-------------------首页时钟界面--------------------*/
+
+uint8_t clkflag=1;
+
 void Show_Clock_UI(void)//首页时钟UI
 {
 	MyRTC_Readtime();//将此刻RTCcounter里的时间戳传递到MyRTC_Time数组里
@@ -21,7 +21,7 @@ void Show_Clock_UI(void)//首页时钟UI
 	OLED_ShowString(96,48,"设置",OLED_8X16);
 }
 
-uint8_t CLK_Page(void)//首页时钟页切换逻辑
+Page CLK_Page(void)//首页时钟页切换逻辑
 {
 	while(1)
 	{
@@ -39,7 +39,10 @@ uint8_t CLK_Page(void)//首页时钟页切换逻辑
 		}
 		else if(num == 3)//确定键
 		{
-			return clkflag;	//跳出循环,切换页面函数
+			//跳出循环,切换页面
+			if(clkflag == 1)return CLOCK;
+			else if(clkflag == 2)return MENU;
+			else if(clkflag == 3)return SETTING;
 		}
 		switch(clkflag)//一级菜单内的界面变换
 		{
@@ -66,14 +69,16 @@ uint8_t CLK_Page(void)//首页时钟页切换逻辑
 	}
 }
 /*---------------------设置界面--------------------------*/
+
+uint8_t settingflag=1;
+
 void Show_Setting_UI(void)
 {
-	OLED_Clear();
 	OLED_ShowImage(0,0,16,16,Return);
 	OLED_ShowString(0,16,"日期时间设置",OLED_8X16);
 }
 
-uint8_t Setting_Page(void)
+Page Setting_Page(void)
 {
 	//清空之前的界面，改换当下UI
 	OLED_Clear();
@@ -93,14 +98,12 @@ uint8_t Setting_Page(void)
 			if(settingflag >3)settingflag = 1;
 		}
 		else if(num == 3)
-		{
-			OLED_Clear();		//清屏，为新页面显示准备
-			//OLED_Update();		
-			if(settingflag == 2)return 1;//跳出循环,切换页面函数
-			else if(settingflag == 3)return 4;
+		{		
+			if(settingflag == 2)return CLOCK;//跳出循环,切换页面函数
+			else if(settingflag == 3)return SETTING_TIME;
 			
 		}
-		switch(settingflag)//一级菜单内的界面变换
+		switch(settingflag)
 		{
 			case 1://无光标
 				OLED_Clear();//涉及界面切换要先清屏
@@ -124,10 +127,147 @@ uint8_t Setting_Page(void)
 	}
 }
 /*---------------------菜单界面-------------------------------*/
+
+uint8_t menuflag = 1;
+uint8_t menuflag_max = 5;
+
+const uint8_t* const icon_pointers[]={
+	Return_icon,//0
+	Timer_icon,//1
+	Alarm_icon,//2
+	Light_icon,//3
+	Game_icon,//4
+	
+};
+
 void Show_Menu_UI(void)
 {
+	OLED_ShowImage(48-2,16-2,32+4,32+4,Target_icon);//注：光标要第一个写入，防止覆盖后面的内容，位置固定在正中间
+	OLED_ShowImage(48,16,32,32,icon_pointers[menuflag-1]);//数值向左偏移一位
+	if(menuflag > 1)OLED_ShowImage(0,16,32,32,icon_pointers[menuflag-1-1]);//flag=1左边没内容就不显示了
+	if(menuflag < menuflag_max)OLED_ShowImage(96,16,32,32,icon_pointers[menuflag-1+1]);
+}
+void Show_Menu_movingUI(int moveflag,uint8_t previous,uint8_t current)//位置示意图： 左--1--2--3--右
+{
+	//对齐数组序号
+	previous -=1;
+	current -=1;
+	//移动指标
+	int location = 0, target;
+	if(moveflag < 0)
+	{
+		target = 48;	//目标向右移48像素（即向右划对应flag减小）
+		while(location < target)
+		{
+			OLED_Clear();
+			OLED_ShowImage(48+location,16,32,32,icon_pointers[previous]);//位置从2到3
+			OLED_ShowImage(0+location,16,32,32,icon_pointers[current]);//位置从1到2
+			if(previous < menuflag_max-1/*对齐*/ && 96+location < 128)OLED_ShowImage(96+location,16,32,32,icon_pointers[previous+1]);//位置从3向右移出，current=menuflag_max右边无图不用移
+			if(current > 1 && -16+location > 0)OLED_ShowImage(-16+location,16,32,32,icon_pointers[current-1]);//位置从左移入到1
+			OLED_Update();
+			location++;
+		}
+	}
+	else if(moveflag > 0)
+	{
+		target = -48;	//目标向左移48像素（即向左划对应flag增大）
+		while(location > target)
+		{
+			OLED_Clear();
+			OLED_ShowImage(48+location,16,32,32,icon_pointers[previous]);//位置从2到1
+			if(current > 1 && 0+location < -32)OLED_ShowImage(0+location,16,32,32,icon_pointers[previous-1]);//位置从1向左移出
+			OLED_ShowImage(96+location,16,32,32,icon_pointers[current]);//位置从3到2
+			if(current > 1 && 128+16+location < 128)OLED_ShowImage(128+16+location,16,32,32,icon_pointers[current+1]);//位置从右移入到3
+			OLED_Update();
+			location--;
+		}
+	}
+}
+
+Page Menu_Page(void)
+{
+	//清空之前的界面，改换当下UI
+	OLED_Clear();
+	Show_Menu_UI();
+	OLED_Update();
+	//检测flag变化
+	int moveflag = 0;
+	
+	uint8_t previous, current = menuflag; 
+	
+	while(1)
+	{
+		uint8_t num=Key_GetNum();
+
+		if(num == 1)
+		{
+			menuflag--;
+			if(menuflag < 1)menuflag = menuflag_max;
+		}
+		else if(num == 2)
+		{
+			menuflag++;
+			if(menuflag >menuflag_max)menuflag = 1;
+		}
+		else if(num == 3)
+		{	
+			if(menuflag == 1)return CLOCK;
+			else if(menuflag == 2)return MENU_TIMER;
+			else if(menuflag == 3)return MENU_ALARM;
+			else if(menuflag == 4)return MENU_LIGHT;
+			else if(menuflag == 5)return MENU_GAME;
+			
+		}
+		//移动检测
+		previous = current;
+		current = menuflag;
+		moveflag = current - previous;//-1往左，+1往右
+		
+		switch(menuflag)
+		{
+			case 1://返回键
+				if(moveflag == -1)Show_Menu_movingUI(moveflag,previous,current);//case由2到1的变化
+				OLED_Clear();
+				Show_Menu_UI();
+				OLED_Update();
+				break;
+			case 2://秒表
+				if(moveflag != 0)Show_Menu_movingUI(moveflag,previous,current);
+				OLED_Clear();
+				Show_Menu_UI();
+				OLED_Update();
+				break;
+			case 3://闹钟
+				if(moveflag != 0)Show_Menu_movingUI(moveflag,previous,current);
+				OLED_Clear();
+				Show_Menu_UI();
+				OLED_Update();
+				break;
+			case 4://手电筒
+				if(moveflag != 0)Show_Menu_movingUI(moveflag,previous,current);
+				OLED_Clear();
+				Show_Menu_UI();
+				OLED_Update();
+				break;
+			case 5://游戏
+				if(moveflag == 1)Show_Menu_movingUI(moveflag,previous,current);
+				OLED_Clear();
+				Show_Menu_UI();
+				OLED_Update();
+				break;
+			
+			default:
+				break;
+		}
+	}
 	
 }
+
+
+
+
+
+
 
 void Show_pageflag_proc(void)
 {

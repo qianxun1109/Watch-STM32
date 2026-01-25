@@ -6,18 +6,26 @@ typedef enum PAGE{
 	MENU = 2,
 	SETTING = 3,
 	SETTING_TIME = 4,
-	
+	MENU_TIMER = 5,
+	MENU_ALARM = 6,
+	MENU_LIGHT = 7,
+	MENU_GAME = 8,
 
 }Page;
 
 extern uint8_t clkflag;
-//CLOCK界面相关函数
+//CLOCK时钟界面相关函数
 void Show_Clock_UI(void);
-uint8_t CLK_Page(void);
-uint8_t Setting_Page(void);
-//设置界面相关函数
+Page CLK_Page(void);
+
+//SETTING设置界面相关函数
 void Show_Setting_UI(void);
-uint8_t Setting_Page(void);
+Page Setting_Page(void);
+
+//MENU菜单界面相关函数
+void Show_Menu_UI(void);
+Page Menu_Page(void);
+
 
 void Show_pageflag_proc(void);
 
