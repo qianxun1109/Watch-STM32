@@ -35,3 +35,4 @@
 .\objects\menu_list1.o: .\System\Scheduler.h
 .\objects\menu_list1.o: Hardware\menu.h
 .\objects\menu_list1.o: .\System\Delay.h
+.\objects\menu_list1.o: Hardware\LED.h

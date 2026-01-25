@@ -2,10 +2,16 @@
 #define __MENU_LIST1_H
 //秒表相关函数
 void Show_Menu_timer_UI(void);
-void Show_Menu_open_movingUI(void);
+void Show_Menu_timer_movingUI(void);
 Page Menu_timer_Page(void);
-//
-
+void Menu_timer_blink(void);
+void Menu_timer_start(void);
+void Menu_timer_stop(void);
+void Menu_timer_reset(void);
+//灯光相关函数
+void Show_Menu_light_UI(void);
+void Show_Menu_light_movingUI(int moveflag);
+Page Menu_light_Page(void);
 
 
 #endif 

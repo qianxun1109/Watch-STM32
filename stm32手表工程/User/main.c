@@ -8,11 +8,13 @@
 #include "Setting_time.h"
 #include "Menu_list1.h"
 #include "Timer.h"
+#include "LED.h"
 
 uint8_t Pageflag = CLOCK;
 
 int main(void)
 {
+	LED_Init();
 	Timer_Init();
 	OLED_Init();
 	MyRTC_Init();
@@ -45,7 +47,7 @@ int main(void)
 				//Pageflag = Menu_alarm_Page();
 				break;
 			case MENU_LIGHT:
-				//Pageflag = Menu_light_Page();
+				Pageflag = Menu_light_Page();
 				break;
 			case MENU_GAME:
 				//Pageflag = Menu_game_time_Page();
