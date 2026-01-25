@@ -44,28 +44,23 @@ Page CLK_Page(void)//首页时钟页切换逻辑
 			else if(clkflag == 2)return MENU;
 			else if(clkflag == 3)return SETTING;
 		}
+		OLED_Clear();//清除上次图像
+		Show_Clock_UI();//准备UI背景
 		switch(clkflag)//一级菜单内的界面变换
 		{
 			case 1:
-				OLED_Clear();
-				Show_Clock_UI();
 				OLED_Update();
 				break;
 			case 2:
-				OLED_Clear();//清除上次图像
-				Show_Clock_UI();//准备UI背景
 				OLED_ReverseArea(0,48,32,16);//填充光标
-				OLED_Update();//呈现最终图像
 				break;
 			case 3:
-				OLED_Clear();
-				Show_Clock_UI();
 				OLED_ReverseArea(96,47,32,17);
-				OLED_Update();
 				break;
 			default:
 				break;
 		}
+		OLED_Update();//呈现最终图像
 	}
 }
 /*---------------------设置界面--------------------------*/
@@ -103,27 +98,22 @@ Page Setting_Page(void)
 			else if(settingflag == 3)return SETTING_TIME;
 			
 		}
+		OLED_Clear();
+		Show_Setting_UI();
 		switch(settingflag)
 		{
 			case 1://无光标
-				OLED_Clear();//涉及界面切换要先清屏
-				Show_Setting_UI();
-				OLED_Update();
 				break;
 			case 2://返回键
-				Show_Setting_UI();
 				OLED_ReverseArea(0,0,16,16);
-				OLED_Update();
 				break;
 			case 3://日期时间设置选项
-				Show_Setting_UI();
 				OLED_ReverseArea(0,16,16*6,16);
-				OLED_Update();
 				break;
-			
 			default:
 				break;
 		}
+		OLED_Update();
 	}
 }
 /*---------------------菜单界面-------------------------------*/
@@ -163,7 +153,7 @@ void Show_Menu_movingUI(int moveflag,uint8_t previous,uint8_t current)//位置�
 			OLED_ShowImage(48+location,16,32,32,icon_pointers[previous]);//位置从2到3
 			OLED_ShowImage(0+location,16,32,32,icon_pointers[current]);//位置从1到2
 			if(previous < menuflag_max-1/*对齐*/ && 96+location < 128)OLED_ShowImage(96+location,16,32,32,icon_pointers[previous+1]);//位置从3向右移出，current=menuflag_max右边无图不用移
-			if(current > 1 && -16+location > 0)OLED_ShowImage(-16+location,16,32,32,icon_pointers[current-1]);//位置从左移入到1
+			if(previous > 1 && -16+location > 0)OLED_ShowImage(-48+location,16,32,32,icon_pointers[current-1]);//位置从左移入到1
 			OLED_Update();
 			location++;
 		}
@@ -175,9 +165,9 @@ void Show_Menu_movingUI(int moveflag,uint8_t previous,uint8_t current)//位置�
 		{
 			OLED_Clear();
 			OLED_ShowImage(48+location,16,32,32,icon_pointers[previous]);//位置从2到1
-			if(current > 1 && 0+location < -32)OLED_ShowImage(0+location,16,32,32,icon_pointers[previous-1]);//位置从1向左移出
+			if(current > 1 && 0+location < 0)OLED_ShowImage(0+location,16,32,32,icon_pointers[previous-1]);//位置从1向左移出
 			OLED_ShowImage(96+location,16,32,32,icon_pointers[current]);//位置从3到2
-			if(current > 1 && 128+16+location < 128)OLED_ShowImage(128+16+location,16,32,32,icon_pointers[current+1]);//位置从右移入到3
+			if(current < menuflag_max-1 && 128+16+location < 128)OLED_ShowImage(128+16+location,16,32,32,icon_pointers[current+1]);//位置从右移入到3
 			OLED_Update();
 			location--;
 		}
@@ -192,7 +182,6 @@ Page Menu_Page(void)
 	OLED_Update();
 	//检测flag变化
 	int moveflag = 0;
-	
 	uint8_t previous, current = menuflag; 
 	
 	while(1)
@@ -222,45 +211,27 @@ Page Menu_Page(void)
 		previous = current;
 		current = menuflag;
 		moveflag = current - previous;//-1往左，+1往右
-		
 		switch(menuflag)
 		{
 			case 1://返回键
-				if(moveflag == -1)Show_Menu_movingUI(moveflag,previous,current);//case由2到1的变化
-				OLED_Clear();
-				Show_Menu_UI();
-				OLED_Update();
+				if(moveflag == -1)Show_Menu_movingUI(moveflag,previous,current);//case由2到1的变化,限制边界情况下moveflag的值，函数内部协调不来
+				
 				break;
 			case 2://秒表
-				if(moveflag != 0)Show_Menu_movingUI(moveflag,previous,current);
-				OLED_Clear();
-				Show_Menu_UI();
-				OLED_Update();
-				break;
 			case 3://闹钟
-				if(moveflag != 0)Show_Menu_movingUI(moveflag,previous,current);
-				OLED_Clear();
-				Show_Menu_UI();
-				OLED_Update();
-				break;
 			case 4://手电筒
 				if(moveflag != 0)Show_Menu_movingUI(moveflag,previous,current);
-				OLED_Clear();
-				Show_Menu_UI();
-				OLED_Update();
 				break;
 			case 5://游戏
 				if(moveflag == 1)Show_Menu_movingUI(moveflag,previous,current);
-				OLED_Clear();
-				Show_Menu_UI();
-				OLED_Update();
 				break;
-			
 			default:
 				break;
 		}
+		OLED_Clear();
+		Show_Menu_UI();
+		OLED_Update();
 	}
-	
 }
 
 

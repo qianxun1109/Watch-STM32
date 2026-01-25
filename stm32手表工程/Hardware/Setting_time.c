@@ -19,7 +19,7 @@ void change_RTCtime(uint8_t sign,uint8_t object)
 }
 //无需关注进位等问题，localtime函数内部会解决
 
-void Show_Setting_Time_UI1(void)
+void Show_Setting_Time_UI1(void)//第一页
 {
 	MyRTC_Readtime();
 	
@@ -33,7 +33,7 @@ void Show_Setting_Time_UI1(void)
 	OLED_Printf(32,48,OLED_8X16,"%2d",MyRTC_Time[2]);
 }
 
-void Show_Setting_Time_UI2(void)
+void Show_Setting_Time_UI2(void)//第二页
 {
 	MyRTC_Readtime();
 	
@@ -149,19 +149,13 @@ Page Setting_time_Page(void)
 		}
 		else if(num == 3)
 		{
-			OLED_Clear();		//清屏，为新页面显示准备
-			//OLED_Update();		
 			if(timeflag == 2)return SETTING;//跳出循环,切换页面(3是SETTING的枚举值)
-			else if(timeflag >= 3 && timeflag <= 8)
-			{
-				SetTime(timeflag);
-			}
-			
+			else if(timeflag >= 3 && timeflag <= 8)SetTime(timeflag);
 		}
-		switch(timeflag)//一级菜单内的界面变换
+		switch(timeflag)
 		{
 			case 1://无光标
-				OLED_Clear();//涉及界面切换要先清屏
+				OLED_Clear();
 				Show_Setting_Time_UI1();
 				OLED_Update();
 				break;

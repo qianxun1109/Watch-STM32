@@ -6,6 +6,7 @@
 #include "Key.h"
 #include "Scheduler.h"
 #include "Setting_time.h"
+#include "Menu_list1.h"
 
 uint8_t Pageflag = CLOCK;
 
@@ -37,7 +38,7 @@ int main(void)
 				Pageflag = Setting_time_Page();
 				break;
 			case MENU_TIMER:
-				//Pageflag = Menu_timer_Page();
+				Pageflag = Menu_timer_Page();
 				break;
 			case MENU_ALARM:
 				//Pageflag = Menu_alarm_Page();
