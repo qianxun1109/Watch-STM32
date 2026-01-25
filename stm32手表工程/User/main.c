@@ -9,21 +9,25 @@
 #include "Menu_list1.h"
 #include "Timer.h"
 #include "LED.h"
+#include "Menu_game.h"
+#include "stdlib.h"
+#include "Delay.h"
 
 uint8_t Pageflag = CLOCK;
+uint8_t Previous_Pageflag;
+
 
 int main(void)
 {
+	MyRTC_Init();
+	OLED_Init();
+	Key_Init();
 	LED_Init();
 	Timer_Init();
-	OLED_Init();
-	MyRTC_Init();
-	Key_Init();
-	MPU6050_Init();
 	Scheduler_Init();
-
+	//MPU6050_Init();
 	
-	OLED_Update();
+	srand((unsigned int)RTC_GetCounter());
 	while (1)
 	{
 		switch(Pageflag)
@@ -50,13 +54,24 @@ int main(void)
 				Pageflag = Menu_light_Page();
 				break;
 			case MENU_GAME:
-				//Pageflag = Menu_game_time_Page();
+				Pageflag = Menu_game_Page();
+				break;
+			case MENU_GAME_END:
+				Pageflag = Game_end_Page();
+				break;
+			case MENU_GAME_BEGIN:
+				Pageflag = Game_begin_Page();
 				break;
 			
 			default:
 				break;
-			
-			
+
 		}
 	}
 }
+//测试
+//OLED_Clear();
+//OLED_Update();
+//Delay_s(1);
+
+

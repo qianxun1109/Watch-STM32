@@ -43,6 +43,13 @@ extern const uint8_t Timer_icon[];
 extern const uint8_t Alarm_icon[];
 extern const uint8_t Return_icon[];
 extern const uint8_t Target_icon[];
+extern const uint8_t Chrome_Dino_run_start[];
+extern const uint8_t Chrome_Dino_run_fail[];
+extern const uint8_t Dinosaur1[];
+extern const uint8_t Dinosaur2[];
+extern const uint8_t Dinosaur_up[];
+extern const uint8_t Begin[];
+
 /*按照上面的格式，在这个位置加入新的图像数据声明*/
 //...
 

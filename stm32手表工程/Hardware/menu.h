@@ -10,7 +10,9 @@ typedef enum PAGE{
 	MENU_ALARM = 6,
 	MENU_LIGHT = 7,
 	MENU_GAME = 8,
-
+	MENU_GAME_END = 9,
+	MENU_GAME_BEGIN = 10,
+	
 }Page;
 
 extern uint8_t clkflag;

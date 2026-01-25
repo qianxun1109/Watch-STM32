@@ -5,6 +5,9 @@
 #include "Scheduler.h"
 #include "menu.h"
 
+extern uint8_t Pageflag;
+extern uint8_t Previous_Pageflag;
+
 uint8_t timeflag = 1;
 
 //更改RTC内部时间戳
@@ -134,6 +137,7 @@ Page Setting_time_Page(void)
 	OLED_Clear();
 	Show_Setting_Time_UI1();
 	OLED_Update();
+	Previous_Pageflag = Pageflag;
 	while(1)
 	{
 		uint8_t num=Key_GetNum();

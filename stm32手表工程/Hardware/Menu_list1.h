@@ -12,6 +12,11 @@ void Menu_timer_reset(void);
 void Show_Menu_light_UI(void);
 void Show_Menu_light_movingUI(int moveflag);
 Page Menu_light_Page(void);
+//游戏界面相关函数
+Page Menu_game_Page(void);
+void Show_Menu_game_UI(void);
+void Show_Menu_game_movingUI(int moveflag);
+
 
 
 #endif 

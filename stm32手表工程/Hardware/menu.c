@@ -7,6 +7,9 @@
 #include "menu.h"
 #include "OLED_Data.h"
 
+extern uint8_t Pageflag;
+extern uint8_t Previous_Pageflag;
+
 /*-------------------首页时钟界面--------------------*/
 
 uint8_t clkflag=1;
@@ -23,6 +26,7 @@ void Show_Clock_UI(void)//首页时钟UI
 
 Page CLK_Page(void)//首页时钟页切换逻辑
 {
+	Previous_Pageflag = Pageflag;//追踪上一次的Pageflag，便于后续一些情况的处理
 	while(1)
 	{
 		//键码变换逻辑
@@ -79,6 +83,8 @@ Page Setting_Page(void)
 	OLED_Clear();
 	Show_Setting_UI();
 	OLED_Update();
+	
+	Previous_Pageflag = Pageflag;
 	while(1)
 	{
 		uint8_t num=Key_GetNum();//键码变换,得到最新时刻键码
@@ -182,6 +188,7 @@ Page Menu_Page(void)
 	int moveflag = 0;
 	uint8_t previous, current = menuflag; 
 	
+	Previous_Pageflag = Pageflag;
 	while(1)
 	{
 		uint8_t num=Key_GetNum();

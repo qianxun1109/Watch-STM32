@@ -39,3 +39,6 @@
 .\objects\main.o: .\Hardware\Menu_list1.h
 .\objects\main.o: .\Hardware\Timer.h
 .\objects\main.o: .\Hardware\LED.h
+.\objects\main.o: .\Hardware\Menu_game.h
+.\objects\main.o: E:\Keil5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\main.o: .\System\Delay.h

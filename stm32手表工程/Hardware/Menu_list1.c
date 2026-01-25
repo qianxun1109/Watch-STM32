@@ -7,6 +7,10 @@
 #include "OLED_Data.h"
 #include "Delay.h"
 #include "LED.h"
+#include "Menu_game.h"
+
+extern uint8_t Pageflag;
+extern uint8_t Previous_Pageflag;
 
 /*--------------------------秒表界面--------------------------------*/
 
@@ -106,6 +110,8 @@ void Menu_timer_reset(void)
 Page Menu_timer_Page(void)
 {
 	Show_Menu_timer_movingUI(1);//滑动进入
+	
+	Previous_Pageflag = Pageflag;
 	while(1)
 	{
 		uint8_t num=Key_GetNum();
@@ -181,11 +187,6 @@ void Show_Menu_light_movingUI(int moveflag)//+号向下移动（进入）；-号
 				OLED_ShowImage(0,0+64+16-location,16,16,Return);
 				OLED_ShowString(19,28+64+16-location,"ON",OLED_12X24);
 				OLED_ShowString(73,28+64+16-location,"OFF",OLED_12X24);
-//				OLED_ShowImage(0,0+64+16-location,16,16,Return);
-//				OLED_Printf(16,16+64+16-location,OLED_12X24,"%02d:%02d:%02d",MyTimer_time[0],MyTimer_time[1],MyTimer_time[2]);
-//				OLED_ShowString(0,48+64+16-location,"开始",OLED_8X16);
-//				OLED_ShowString(48,48+64+16-location,"暂停",OLED_8X16);
-//				OLED_ShowString(96,48+64+16-location,"重置",OLED_8X16);
 			}
 			OLED_Update();
 			location++;
@@ -207,11 +208,6 @@ void Show_Menu_light_movingUI(int moveflag)//+号向下移动（进入）；-号
 				OLED_ShowImage(0,0+location,16,16,Return);
 				OLED_ShowString(19,28+location,"ON",OLED_12X24);
 				OLED_ShowString(73,28+location,"OFF",OLED_12X24);
-//				OLED_ShowImage(0,0+location,16,16,Return);
-//				OLED_Printf(16,16+location,OLED_12X24,"%02d:%02d:%02d",MyTimer_time[0],MyTimer_time[1],MyTimer_time[2]);
-//				OLED_ShowString(0,48+location,"开始",OLED_8X16);
-//				OLED_ShowString(48,48+location,"暂停",OLED_8X16);
-//				OLED_ShowString(96,48+location,"重置",OLED_8X16);
 			}
 			OLED_Update();
 			location++;
@@ -230,6 +226,8 @@ void Menu_light_blink(void)
 Page Menu_light_Page(void)
 {
 	Show_Menu_light_movingUI(1);//滑动进入
+	
+	Previous_Pageflag = Pageflag;
 	while(1)
 	{
 		uint8_t num=Key_GetNum();
@@ -283,8 +281,102 @@ Page Menu_light_Page(void)
 	}
 }
 
+/*--------------------游戏界面--------------------------*/
+uint8_t gameflag = 1;
 
-
+void Show_Menu_game_UI(void)
+{
+	OLED_ShowImage(0,0,16,16,Return);
+	OLED_ShowString(0,16,"Chrome Dino Run",OLED_8X16);
+}
+void Show_Menu_game_movingUI(int moveflag)//+号向下移动（进入）；-号向上移动（退出）
+{
+	uint8_t location = 0;
+	if(moveflag > 0)
+	{
+		while(location < 64+16)//总向下移动距离为64+16，其中64为基本翻页距离，16为额外间距
+		{
+			OLED_Clear();
+			if(location < 48)
+			{
+				OLED_ShowImage(48,16-location,32,32,icon_pointers[menuflag-1]);//中间
+				if(menuflag > 1)OLED_ShowImage(0,16-location,32,32,icon_pointers[menuflag-1-1]);//左
+				if(menuflag < menuflag_max)OLED_ShowImage(96,16-location,32,32,icon_pointers[menuflag-1+1]);//右
+			}
+			if(location > 16)
+			{
+				OLED_ShowImage(0,0+64+16-location,16,16,Return);
+				OLED_ShowString(0,16+64+16-location,"Chrome Dino Run",OLED_8X16);
+			}
+			OLED_Update();
+			location++;
+		}
+	}
+	else if(moveflag < 0)
+	{
+		while(location < 64+16)//总向上移动距离为64+16，其中64为基本翻页距离，16为额外间距
+		{
+			OLED_Clear();
+			if(location > 16)
+			{
+				OLED_ShowImage(48,16+location-64-16,32,32,icon_pointers[menuflag-1]);//中间
+				if(menuflag > 1)OLED_ShowImage(0,16+location-64-16,32,32,icon_pointers[menuflag-1-1]);//左
+				if(menuflag < menuflag_max)OLED_ShowImage(96,16+location-64-16,32,32,icon_pointers[menuflag-1+1]);//右
+			}
+			if(location < 64)
+			{
+				OLED_ShowImage(0,0+location,16,16,Return);
+				OLED_ShowString(0,16+location,"Chrome Dino Run",OLED_8X16);
+			}
+			OLED_Update();
+			location++;
+		}
+	}
+}
+Page Menu_game_Page(void)
+{
+	if(Previous_Pageflag == MENU)Show_Menu_game_movingUI(1);//从菜单跳转时滑动进入
+	
+	Previous_Pageflag = Pageflag;
+	while(1)
+	{
+		uint8_t num=Key_GetNum();
+		if(num == 1)
+		{
+			gameflag--;
+			if(gameflag < 1)gameflag = 2;
+		}
+		else if(num == 2)
+		{
+			gameflag++;
+			if(gameflag >2)gameflag = 1;
+		}
+		else if(num == 3)
+		{		
+			if(gameflag == 1)
+			{
+				Show_Menu_game_movingUI(-1);
+				return MENU;
+			}
+			else if(gameflag == 2)return MENU_GAME_BEGIN;
+		}
+		OLED_Clear();
+		Show_Menu_game_UI();
+		switch(gameflag)
+		{
+			case 1://返回键
+				OLED_ReverseArea(0,0,16,16);
+				break;
+			case 2://Chrome Dino Run
+				OLED_ReverseArea(0,16,8*15,16);
+				break;
+			default:
+				break;
+		}
+		OLED_Update();
+	}
+	
+}
 
 
 
