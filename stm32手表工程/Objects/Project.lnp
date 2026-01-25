@@ -34,6 +34,7 @@
 ".\objects\key.o"
 ".\objects\setting_time.o"
 ".\objects\menu_list1.o"
+".\objects\timer.o"
 ".\objects\delay.o"
 ".\objects\scheduler.o"
 ".\objects\myrtc.o"

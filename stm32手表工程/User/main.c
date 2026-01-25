@@ -7,6 +7,7 @@
 #include "Scheduler.h"
 #include "Setting_time.h"
 #include "Menu_list1.h"
+#include "Timer.h"
 
 uint8_t Pageflag = CLOCK;
 

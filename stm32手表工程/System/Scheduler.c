@@ -17,15 +17,12 @@ task_t tasks[]={
 
 };
 
-void Timer_Init(void)//Enable TIM1 to start the systick
+void Scheduler_Init(void)//Enable TIM1 to start the systick
 {
-	/*开启时钟*/
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE);			
 	
-	/*配置时钟源*/
 	TIM_InternalClockConfig(TIM1);		
 	
-	/*时基单元初始化*/
 	TIM_TimeBaseInitTypeDef TIM_TimeBaseInitStructure;				
 	TIM_TimeBaseInitStructure.TIM_ClockDivision = TIM_CKD_DIV1;		//时钟分频，选择不分频，此参数用于配置滤波器时钟，不影响时基单元功能
 	TIM_TimeBaseInitStructure.TIM_CounterMode = TIM_CounterMode_Up;	
@@ -34,16 +31,12 @@ void Timer_Init(void)//Enable TIM1 to start the systick
 	TIM_TimeBaseInitStructure.TIM_RepetitionCounter = 0;			
 	TIM_TimeBaseInit(TIM1, &TIM_TimeBaseInitStructure);				
 	
-	/*中断输出配置*/
 	TIM_ClearFlag(TIM1, TIM_FLAG_Update);		
 	
 	TIM_ITConfig(TIM1, TIM_IT_Update, ENABLE);					
 	
-	/*NVIC中断分组*/
-	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);				//若有多个中断，可以把此代码放在main函数内，while循环之前
-																//若调用多次配置分组的代码，则后执行的配置会覆盖先执行的配置
+	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);	
 	
-	/*NVIC配置*/
 	NVIC_InitTypeDef NVIC_InitStructure;						
 	NVIC_InitStructure.NVIC_IRQChannel = TIM1_UP_IRQn;//  < --TIM1特别	
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;				
@@ -51,11 +44,11 @@ void Timer_Init(void)//Enable TIM1 to start the systick
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;			
 	NVIC_Init(&NVIC_InitStructure);								
 	
-	/*TIM使能*/
 	TIM_CtrlPWMOutputs(TIM1, ENABLE);		//<<-----使用TIM1要多这行代码
-	TIM_Cmd(TIM1, ENABLE);									
+	TIM_Cmd(TIM1, ENABLE);		
+
+	task_num=sizeof(tasks)/sizeof(tasks[0]);
 }
-//定时器中断函数，可以复制到使用它的地方
 void TIM1_UP_IRQHandler(void)		//<<-----使用TIM1要注意中断名不一样
 {
 	if (TIM_GetITStatus(TIM1, TIM_IT_Update) == SET)	//<<-----使用TIM1要注意中断标志位也不一样
@@ -66,11 +59,6 @@ void TIM1_UP_IRQHandler(void)		//<<-----使用TIM1要注意中断名不一样
 		
 		TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
 	}
-}
-
-void Scheduler_Init(void)
-{
-	task_num=sizeof(tasks)/sizeof(tasks[0]);	
 }
 
 void Scheduler_run(void)

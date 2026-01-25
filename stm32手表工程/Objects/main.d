@@ -37,3 +37,4 @@
 .\objects\main.o: .\System\Scheduler.h
 .\objects\main.o: .\Hardware\Setting_time.h
 .\objects\main.o: .\Hardware\Menu_list1.h
+.\objects\main.o: .\Hardware\Timer.h
