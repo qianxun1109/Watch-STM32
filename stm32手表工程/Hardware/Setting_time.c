@@ -48,7 +48,7 @@ void Show_Setting_Time_UI2(void)//第二页
 
 uint8_t SetTime(uint8_t flag)
 {
-	if(flag == 3)//年设置
+	if(flag == 2)//年设置
 	{
 		while(1)
 		{
@@ -58,10 +58,10 @@ uint8_t SetTime(uint8_t flag)
 			uint8_t num=Key_GetNum();//键码变换
 			if(num == 1)change_RTCtime(1,0);
 			else if(num == 2)change_RTCtime(2,0);
-			else if(num == 3)return 3;//更改成功
+			else if(num == 3)return 2;//更改成功
 		}
 	}
-	else if(flag == 4)//月
+	else if(flag == 3)//月
 	{
 		while(1)
 		{
@@ -71,10 +71,10 @@ uint8_t SetTime(uint8_t flag)
 			uint8_t num=Key_GetNum();
 			if(num == 1)change_RTCtime(1,1);
 			else if(num == 2)change_RTCtime(2,1);
-			else if(num == 3)return 4;
+			else if(num == 3)return 3;
 		}
 	}
-	else if(flag == 5)//日
+	else if(flag == 4)//日
 	{
 		while(1)
 		{
@@ -84,10 +84,10 @@ uint8_t SetTime(uint8_t flag)
 			uint8_t num=Key_GetNum();
 			if(num == 1)change_RTCtime(1,2);
 			else if(num == 2)change_RTCtime(2,2);
-			else if(num == 3)return 5;
+			else if(num == 3)return 4;
 		}
 	}
-	else if(flag == 6)//时
+	else if(flag == 5)//时
 	{
 		while(1)
 		{
@@ -97,10 +97,10 @@ uint8_t SetTime(uint8_t flag)
 			uint8_t num=Key_GetNum();
 			if(num == 1)change_RTCtime(1,3);
 			else if(num == 2)change_RTCtime(2,3);
-			else if(num == 3)return 6;
+			else if(num == 3)return 5;
 		}
 	}
-	else if(flag == 7)//分
+	else if(flag == 6)//分
 	{
 		while(1)
 		{
@@ -110,10 +110,10 @@ uint8_t SetTime(uint8_t flag)
 			uint8_t num=Key_GetNum();
 			if(num == 1)change_RTCtime(1,4);
 			else if(num == 2)change_RTCtime(2,4);
-			else if(num == 3)return 7;
+			else if(num == 3)return 6;
 		}
 	}
-	else if(flag == 8)//秒
+	else if(flag == 7)//秒
 	{
 		while(1)
 		{
@@ -123,7 +123,7 @@ uint8_t SetTime(uint8_t flag)
 			uint8_t num=Key_GetNum();
 			if(num == 1)change_RTCtime(1,5);
 			else if(num == 2)change_RTCtime(2,5);
-			else if(num == 3)return 8;
+			else if(num == 3)return 7;
 		}
 	}
 	return 0;
@@ -131,75 +131,62 @@ uint8_t SetTime(uint8_t flag)
 
 Page Setting_time_Page(void)
 {
-	OLED_Clear();//涉及界面切换要先清屏
+	OLED_Clear();
 	Show_Setting_Time_UI1();
 	OLED_Update();
 	while(1)
 	{
-		uint8_t num=Key_GetNum();//键码变换,得到最新时刻键码
+		uint8_t num=Key_GetNum();
 		if(num == 1)
 		{
 			timeflag--;
-			if(timeflag < 1)timeflag = 8;
+			if(timeflag < 1)timeflag = 7;
 		}
 		else if(num == 2)
 		{
 			timeflag++;
-			if(timeflag >8)timeflag = 1;
+			if(timeflag >7)timeflag = 2;
 		}
 		else if(num == 3)
 		{
-			if(timeflag == 2)return SETTING;//跳出循环,切换页面(3是SETTING的枚举值)
-			else if(timeflag >= 3 && timeflag <= 8)SetTime(timeflag);
+			if(timeflag == 1)return SETTING;
+			else if(timeflag >= 2 && timeflag <= 7)SetTime(timeflag);
 		}
+		OLED_Clear();
 		switch(timeflag)
 		{
-			case 1://无光标
-				OLED_Clear();
-				Show_Setting_Time_UI1();
-				OLED_Update();
-				break;
-			case 2://返回键
+			case 1://返回键
 				Show_Setting_Time_UI1();
 				OLED_ReverseArea(0,0,16,16);
-				OLED_Update();
 				break;
-			case 3://年
+			case 2://年
 				Show_Setting_Time_UI1();
 				OLED_ReverseArea(0,16,16,16);
-				OLED_Update();
 				break;
-			case 4://月
+			case 3://月
 				Show_Setting_Time_UI1();
 				OLED_ReverseArea(0,32,16,16);
-				OLED_Update();
 				break;
-			case 5://日
-				OLED_Clear();
+			case 4://日
 				Show_Setting_Time_UI1();
 				OLED_ReverseArea(0,48,16,16);
-				OLED_Update();
 				break;
-			case 6://时
-				OLED_Clear();
+			case 5://时
 				Show_Setting_Time_UI2();
 				OLED_ReverseArea(0,0,16,16);
-				OLED_Update();
 				break;
-			case 7://分
+			case 6://分
 				Show_Setting_Time_UI2();
 				OLED_ReverseArea(0,16,16,16);
-				OLED_Update();
 				break;
-			case 8://秒
-				OLED_Clear();
+			case 7://秒
 				Show_Setting_Time_UI2();
 				OLED_ReverseArea(0,32,16,16);
-				OLED_Update();
 				break;
 			default:
 				break;
 		}
+		OLED_Update();
 	}
 }
 

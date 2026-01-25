@@ -126,6 +126,13 @@ Page Menu_timer_Page(void)
 	}
 }
 
+void Menu_timer_start(void)
+{
+	Show_Menu_timer_UI();
+	OLED_Clear();
+}
+	
+	
 
 
 

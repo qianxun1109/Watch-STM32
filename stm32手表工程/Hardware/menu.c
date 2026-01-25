@@ -46,13 +46,13 @@ Page CLK_Page(void)//首页时钟页切换逻辑
 		}
 		OLED_Clear();//清除上次图像
 		Show_Clock_UI();//准备UI背景
-		switch(clkflag)//一级菜单内的界面变换
+		switch(clkflag)//光标填充
 		{
 			case 1:
 				OLED_Update();
 				break;
 			case 2:
-				OLED_ReverseArea(0,48,32,16);//填充光标
+				OLED_ReverseArea(0,48,32,16);
 				break;
 			case 3:
 				OLED_ReverseArea(96,47,32,17);
@@ -85,29 +85,27 @@ Page Setting_Page(void)
 		if(num == 1)
 		{
 			settingflag--;
-			if(settingflag < 1)settingflag = 3;
+			if(settingflag < 1)settingflag = 2;
 		}
 		else if(num == 2)
 		{
 			settingflag++;
-			if(settingflag >3)settingflag = 1;
+			if(settingflag >2)settingflag = 1;
 		}
 		else if(num == 3)
 		{		
-			if(settingflag == 2)return CLOCK;//跳出循环,切换页面函数
-			else if(settingflag == 3)return SETTING_TIME;
+			if(settingflag == 1)return CLOCK;//跳出循环,切换页面函数
+			else if(settingflag == 2)return SETTING_TIME;
 			
 		}
 		OLED_Clear();
 		Show_Setting_UI();
 		switch(settingflag)
 		{
-			case 1://无光标
-				break;
-			case 2://返回键
+			case 1://返回键
 				OLED_ReverseArea(0,0,16,16);
 				break;
-			case 3://日期时间设置选项
+			case 2://日期时间设置选项
 				OLED_ReverseArea(0,16,16*6,16);
 				break;
 			default:
