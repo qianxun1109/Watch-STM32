@@ -35,3 +35,5 @@
 .\objects\menu_game.o: .\System\Scheduler.h
 .\objects\menu_game.o: Hardware\menu.h
 .\objects\menu_game.o: .\System\Delay.h
+.\objects\menu_game.o: E:\Keil5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\menu_game.o: Hardware\Menu_game.h

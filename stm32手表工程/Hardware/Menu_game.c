@@ -6,21 +6,32 @@
 #include "menu.h"
 #include "OLED_Data.h"
 #include "Delay.h"
+#include "stdlib.h"
+#include "Menu_game.h"
 
 extern uint8_t Pageflag;
 extern uint8_t Previous_Pageflag;
 
+uint32_t Dino_score = 0;
 uint8_t game_endflag = 2;
 uint8_t game_beginflag = 1;
-uint8_t game_runflag = 0;
+uint8_t Dino_Runflag = 0;
 
-void Game_start_UI(void)
+Dino_border border[]={
+{0,43,19,21},//小恐龙(B值变化)
+{128,64-23,11,23},//Dino_cacti_1(A值变化)
+{128,64-20,21,20},//Dino_cacti_2
+{128,64-15,25,15},//Dino_cacti_3
+{128,64-22,32,22},//Dino_cacti_4
+};
+
+void Dino_start_UI(void)
 {
 	OLED_ShowImage(0,0,128,64,Chrome_Dino_run_start);
 	OLED_ShowImage(52,24,16,16,Return);
 	OLED_ShowImage(52,24+16,16,16,Begin);
 }
-void Game_fail_UI(void)
+void Dino_fail_UI(void)
 {
 	OLED_ShowImage(0,0,128,64,Chrome_Dino_run_fail);
 }
@@ -50,74 +61,227 @@ void Dino_runing_UI(void)
 		}
 	}
 }
-uint8_t Dino_jumping_UI(uint8_t flag)//1小跳 2大跳
+uint8_t Dino_jumping_UI(uint8_t flag,uint8_t speed)//1小跳 2大跳
 {
-	static uint8_t location = 0;
-	static uint8_t sign = 0;
+	static int location = 0;
+	static uint8_t sign = 0;//sign=1为上升过程，0为下降过程
+	//速度对跳跃过程的控制-------------------------------------
 	if(sign == 0)
 	{
 		location++;
+		if(flag == 2 && location <= 16)location++;//跳跃速度变化
+		if(speed >= 3 && flag == 2 && location <= 30)location++;
+		if(speed >= 3 && flag == 1 && location <= 16)location++;
+		if(speed >= 4 && flag == 2 && location <= 35)location++;
+		if(speed >= 4 && flag == 1 && location <= 22)location++;
+		if(speed >= 5 && flag == 2 && location <= 38)location++;
+		if(speed >= 5 && flag == 1 && location <= 26)location++;
+		
+		
 		OLED_ShowImage(0,43-location,19,21,Dinosaur_up);
 	}
 	else if(sign == 1)
 	{
 		location--;
+		if(flag == 2 && location <= 16 && location >= 1)location--;
+		if(speed >= 3 && flag == 2 && location >= 1 && location <= 30)location--;
+		if(speed >= 3 && flag == 1 && location >= 1 && location <= 16)location--;
+		if(speed >= 4 && flag == 2 && location >= 1 && location <= 35)location--;
+		if(speed >= 4 && flag == 1 && location >= 1 && location <= 22)location--;
+		if(speed >= 5 && flag == 2 && location >= 1 && location <= 38)location--;
+		if(speed >= 5 && flag == 1 && location >= 1 && location <= 26)location--;
+		
 		OLED_ShowImage(0,43-location,19,21,Dinosaur_up);
+		
+		
 	}
+	//跳跃限度-----------------------------------------------
 	if(flag == 1)
 	{
-		if(location >= 25)sign = 1;//小跳25像素
+		if(location >= 30)sign = 1;//小跳为30像素
 	}
 	else if(flag == 2)
 	{
-		if(location >= 39)sign = 1;//大跳39像素
+		if(location >= 40)sign = 1;//大跳为40像素
 	}
-	if(location == 0)//一次跳跃结束，重置变量
+	if(location <= 0)//一次跳跃结束，重置变量
 	{
 		sign = 0;
 		return 0;
 	}
 	return 1;//跳跃未结束
 }
+
+void Dino_ground_UI(void)//以3张图为一组，移动128*2次为一轮，更新随机值
+{
+	static uint16_t tick = 128*2;
+	static uint8_t i;
+	if(tick >= 128*2)
+	{
+		tick = 0;
+		i = rand()%2;//随机场景
+	}
+	static uint16_t location = 0;
+	if(i == 1)//概率0.5
+	{
+		OLED_ShowImage(0-location,64-5,128,5,Dino_ground_1);
+		OLED_ShowImage(128-location,64-5,128,5,Dino_ground_2);
+		OLED_ShowImage(128*2-location,64-5,128,5,Dino_ground_1);
+	}
+	else
+	{
+		OLED_ShowImage(0-location,64-5,128,5,Dino_ground_1);
+		OLED_ShowImage(128-location,64-5,128,5,Dino_ground_2);
+		OLED_ShowImage(128*2-location,64-5,128,5,Dino_ground_1);
+	}
+	location++;
+	tick++;
+	if(location >= 128*2)location = 0;
+}
+void Dino_cloud_UI(void)//放4页的中间两页，和仙人掌错开
+{
+	static uint16_t tick = 128*3;
+	static uint8_t i,j;
+	if(tick >= 128*3)
+	{
+		tick = 0;
+		i =rand()%1;
+		j = rand()%128*2;//	j随机x坐标
+	}
+	static uint16_t location = 0;
+	if(i == 0)
+	{
+		OLED_ShowImage(128-location+j,10,22,8,Dino_cloud);
+		location++;//只在有云刷新时才++
+	}
+	tick++;
+	if(location >= 128*3)location = 0;
+}
+void Dino_cacti_UI(void)
+{
+	static uint16_t tick = 128*2;
+	static uint8_t i,j;
+	if(tick >= 128*2)
+	{
+		tick = 0;
+		if(Dino_score > 1000)i = rand()%4+1;//	i=1~4随机仙人掌类型
+		else if(Dino_score <= 1000)i = rand()%2+1;//	i=1~2随机仙人掌类型
+		j = rand()%128;//	j随机x坐标
+	}
+	static uint16_t location = 0;
+	if(i == 1)OLED_ShowImage(128+j-location,64-23,11,23,Dino_cacti_1);//统一放在第二页的随机位置
+	else if(i == 2)OLED_ShowImage(128+j-location,64-20,21,20,Dino_cacti_2);
+	else if(i == 3)OLED_ShowImage(128+j-location,64-15,25,15,Dino_cacti_3);
+	else if(i == 4)OLED_ShowImage(128+j-location,64-22,32,22,Dino_cacti_4);
+	tick++;
+	location++;
+	if(location >= 128*2)location = 0;
+}
+void Dino_score_UI(void)
+{
+	OLED_Printf(128-6*6,0,OLED_6X8,"%06d",Dino_score);
+}
 void Dino_scene_UI(void)
 {
-	
-	
+	Dino_ground_UI();
+	Dino_cloud_UI();
+	Dino_cacti_UI();
+	Dino_score_UI();
 }
-
-
-
-void Game_Run(void)
+void Dino_Run(void)
 {
-	uint8_t jumpoverflag;
+	uint8_t Dino_speed = 1;//用于调整速度
+	uint8_t Dino_speed_sign = 0;//用于辅助调整速度
+	uint8_t jumpoverflag;//用于判断跳跃是否结束
 	while(1)
 	{
+		//场景与跳跃
+		//按键控制跳跃类别--------------------------------------------
 		uint8_t num=Key_GetNum();
-		if(num == 1)game_runflag = 1;
-		else if(num == 2)game_runflag = 2;
+		if(num == 1)Dino_Runflag = 1;
+		else if(num == 2)Dino_Runflag = 2;
 		else if(num == 3)break;//自尽
 		OLED_Clear();
-		switch(game_runflag)
+		//速度对场景填充的影响-------------------------------------------
+			//speed=1
+		Dino_scene_UI();
+			//speed=2
+		if(Dino_speed == 2 && Dino_speed_sign == 1)
+		{
+			Dino_speed_sign = 0;
+			OLED_Clear();
+			Dino_scene_UI();
+		}
+		else if(Dino_speed == 2 && Dino_speed_sign == 0)Dino_speed_sign = 1;
+			//speed=3
+		if(Dino_speed >= 3)
+		{
+			OLED_Clear();
+			Dino_scene_UI();
+		}
+		if(Dino_speed >= 4)
+		{
+			OLED_Clear();
+			Dino_scene_UI();
+		}
+		if(Dino_speed >= 5)
+		{
+			OLED_Clear();
+			Dino_scene_UI();
+		}
+		if(Dino_speed >= 6)
+		{
+			OLED_Clear();
+			Dino_scene_UI();
+		}
+		//跳跃与奔跑的处理及速度对跳跃的影响-------------------------------------------------------
+		switch(Dino_Runflag)
 		{
 			case 0://奔跑
 				Dino_runing_UI();
 				break;
 			case 1://小跳
-				jumpoverflag = Dino_jumping_UI(1);
-				if(jumpoverflag == 0)game_runflag = 0;//跳跃结束
+				jumpoverflag = Dino_jumping_UI(1,Dino_speed);
+				if(jumpoverflag == 0)Dino_Runflag = 0;//跳跃结束
 				break;
 			case 2://大跳
-				jumpoverflag = Dino_jumping_UI(2);
-				if(jumpoverflag == 0)game_runflag = 0;
+				jumpoverflag = Dino_jumping_UI(2,Dino_speed);
+				if(jumpoverflag == 0)Dino_Runflag = 0;
 				break;
 			default:
 				break;
 		}
+		//场景主题切换----------------------------------------------------
+		if(Dino_speed == 3)OLED_Reverse();
+		if(Dino_speed == 5)OLED_Reverse();
+		if(Dino_speed == 6 && Dino_speed_sign == 0)
+		{
+			Dino_speed_sign = 1;
+			OLED_Reverse();
+		}
+		else if(Dino_speed == 6 && Dino_speed_sign == 1)Dino_speed_sign = 0;
 		OLED_Update();
+		//碰撞判断--------------------------------------------------------
+		//...
+		//动态变化-----------------------------------------------------------
+			//分数对速度的转换
+		if(Dino_score >= 1000 && Dino_score < 3000)Dino_speed = 2;
+		if(Dino_score >= 3000 && Dino_score < 6000)Dino_speed = 3;
+		if(Dino_score >= 6000 && Dino_score < 10000)Dino_speed = 4;
+		if(Dino_score >= 10000 && Dino_score < 15000)Dino_speed = 5;
+		if(Dino_score >= 15000 && Dino_score < 20000)Dino_speed = 6;
+		
+			//速度对分数影响
+		Dino_score++;
+		if(Dino_speed == 2 && Dino_speed_sign == 1)Dino_score++;
+		if(Dino_speed == 3)Dino_score++;
+		if(Dino_speed == 4)Dino_score++;
+		if(Dino_speed == 5)Dino_score++;
+		if(Dino_speed == 6)Dino_score++;
 	}
 }
 
-Page Game_end_Page(void)
+Page Dino_end_Page(void)
 {
 	Previous_Pageflag = Pageflag;
 	while(1)
@@ -136,11 +300,11 @@ Page Game_end_Page(void)
 		else if(num == 3)
 		{		
 			if(game_endflag == 1)return MENU_GAME;
-			//else if(game_endflag == 2)
+			else if(game_endflag == 2)Dino_Run();
 			//else if(game_endflag == 3)
 		}
 		//OLED_Clear();
-		Game_fail_UI();
+		Dino_fail_UI();
 		switch(game_endflag)
 		{
 			case 1://退出键
@@ -159,7 +323,7 @@ Page Game_end_Page(void)
 	}
 }
 
-Page Game_begin_Page(void)
+Page Dino_begin_Page(void)
 {
 	Previous_Pageflag = Pageflag;
 	while(1)
@@ -180,12 +344,12 @@ Page Game_begin_Page(void)
 			if(game_beginflag == 1)return MENU_GAME;
 			else if(game_beginflag == 2)
 			{
-				Game_Run();
+				Dino_Run();
 				return MENU_GAME_END;
 			}
 		}
 		OLED_Clear();
-		Game_start_UI();
+		Dino_start_UI();
 		switch(game_beginflag)
 		{
 			case 1://退出键

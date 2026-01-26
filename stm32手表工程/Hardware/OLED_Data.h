@@ -49,6 +49,15 @@ extern const uint8_t Dinosaur1[];
 extern const uint8_t Dinosaur2[];
 extern const uint8_t Dinosaur_up[];
 extern const uint8_t Begin[];
+extern const uint8_t Dino_cacti_1[];
+extern const uint8_t Dino_cacti_2[];
+extern const uint8_t Dino_cacti_3[];
+extern const uint8_t Dino_cacti_4[];
+extern const uint8_t Dino_cloud[];
+extern const uint8_t Dino_ground_1[];
+extern const uint8_t Dino_ground_2[];
+
+
 
 /*按照上面的格式，在这个位置加入新的图像数据声明*/
 //...
