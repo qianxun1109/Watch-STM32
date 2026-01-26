@@ -27,7 +27,7 @@ int main(void)
 	Scheduler_Init();
 	//MPU6050_Init();
 	
-	srand((unsigned int)RTC_GetCounter());
+	//srand((unsigned int)RTC_GetCounter());
 	while (1)
 	{
 		switch(Pageflag)
