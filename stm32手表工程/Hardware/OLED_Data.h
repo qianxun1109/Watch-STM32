@@ -53,7 +53,8 @@ extern const uint8_t Dino_cacti_1[];
 extern const uint8_t Dino_cacti_2[];
 extern const uint8_t Dino_cacti_3[];
 extern const uint8_t Dino_cacti_4[];
-extern const uint8_t Dino_cloud[];
+extern const uint8_t Dino_cloud_1[];
+extern const uint8_t Dino_cloud_2[];
 extern const uint8_t Dino_ground_1[];
 extern const uint8_t Dino_ground_2[];
 
