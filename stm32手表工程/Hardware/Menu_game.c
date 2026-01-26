@@ -30,11 +30,15 @@ void Dino_start_UI(void)
 	OLED_ShowImage(52,24,16,16,Return);
 	OLED_ShowImage(52,24+16,16,16,Begin);
 }
-void Dino_fail_UI(void)
+void Dino_end_UI(void)
 {
-	OLED_ShowImage(0,0,128,64,Chrome_Dino_run_fail);
+	OLED_Printf(64-2-4*8,32-16-2,OLED_8X16,"GAME");
+	OLED_Printf(64+2,32-16-2,OLED_8X16,"OVER");
+	OLED_ShowImage(64-8,34,16,16,Dino_restart);
+	OLED_ShowImage(64+8+4,34,16,16,Dino_rank);
+	OLED_ShowImage(64-8-4-16,34,16,16,Return);
+	OLED_ShowImage(0,borders[0].B,19,21,Dinosaur_dead);
 }
-
 void Dino_runing_UI(void)
 {
 	static uint8_t count = 0;
@@ -349,17 +353,17 @@ Page Dino_end_Page(void)
 			//else if(game_endflag == 3)
 		}
 		//OLED_Clear();
-		Dino_fail_UI();
+		Dino_end_UI();
 		switch(game_endflag)
 		{
 			case 1://退出键
-				OLED_ReverseArea(32,33,20,16);
+				OLED_ReverseArea(64-8-4-16,34,16,16);
 				break;
 			case 2://重新开始
-				OLED_ReverseArea(32+25,33,20,16);
+				OLED_ReverseArea(64-8,34,16,16);
 				break;
 			case 3://历史记录
-				OLED_ReverseArea(32+25+25,33,20,16);
+				OLED_ReverseArea(64+8+4,34,16,16);
 				break;
 			default:
 				break;

@@ -12,7 +12,7 @@ typedef struct Dino_Border{//用与碰撞判断
 	int high;
 }Dino_border;
 
-void Dino_fail_UI(void);
+void Dino_end_UI(void);
 void Dino_start_UI(void);
 void Dino_runing_UI(void);
 uint8_t Dino_jumping_UI(uint8_t flag,uint8_t speed);

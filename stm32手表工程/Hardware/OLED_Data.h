@@ -47,6 +47,7 @@ extern const uint8_t Chrome_Dino_run_start[];
 extern const uint8_t Chrome_Dino_run_fail[];
 extern const uint8_t Dinosaur1[];
 extern const uint8_t Dinosaur2[];
+extern const uint8_t Dinosaur_dead[];
 extern const uint8_t Dinosaur_up[];
 extern const uint8_t Begin[];
 extern const uint8_t Dino_cacti_1[];
@@ -57,7 +58,8 @@ extern const uint8_t Dino_cloud_1[];
 extern const uint8_t Dino_cloud_2[];
 extern const uint8_t Dino_ground_1[];
 extern const uint8_t Dino_ground_2[];
-
+extern const uint8_t Dino_restart[];
+extern const uint8_t Dino_rank[];
 
 
 /*按照上面的格式，在这个位置加入新的图像数据声明*/
