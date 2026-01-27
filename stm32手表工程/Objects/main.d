@@ -42,3 +42,4 @@
 .\objects\main.o: .\Hardware\Menu_game.h
 .\objects\main.o: E:\Keil5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\objects\main.o: .\System\Delay.h
+.\objects\main.o: .\Hardware\Setting_list1.h

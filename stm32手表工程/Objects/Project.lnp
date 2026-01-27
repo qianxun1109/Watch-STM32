@@ -37,6 +37,7 @@
 ".\objects\timer.o"
 ".\objects\led.o"
 ".\objects\menu_game.o"
+".\objects\setting_list1.o"
 ".\objects\delay.o"
 ".\objects\scheduler.o"
 ".\objects\myrtc.o"

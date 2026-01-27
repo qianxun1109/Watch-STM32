@@ -51,6 +51,7 @@ void Show_Setting_Time_UI2(void)//第二页
 
 uint8_t SetTime(uint8_t flag)
 {
+	OLED_Clear();
 	if(flag == 2)//年设置
 	{
 		while(1)
@@ -134,9 +135,6 @@ uint8_t SetTime(uint8_t flag)
 
 Page Setting_time_Page(void)
 {
-	OLED_Clear();
-	Show_Setting_Time_UI1();
-	OLED_Update();
 	Previous_Pageflag = Pageflag;
 	while(1)
 	{

@@ -10,6 +10,7 @@
 extern uint8_t Pageflag;
 extern uint8_t Previous_Pageflag;
 
+uint8_t Menu_speed = 2;
 /*-------------------首页时钟界面--------------------*/
 
 uint8_t clkflag=1;
@@ -75,15 +76,11 @@ void Show_Setting_UI(void)
 {
 	OLED_ShowImage(0,0,16,16,Return);
 	OLED_ShowString(0,16,"日期时间设置",OLED_8X16);
+	OLED_ShowString(0,32,"移动速度设置",OLED_8X16);
 }
 
 Page Setting_Page(void)
 {
-	//清空之前的界面，改换当下UI
-	OLED_Clear();
-	Show_Setting_UI();
-	OLED_Update();
-	
 	Previous_Pageflag = Pageflag;
 	while(1)
 	{
@@ -91,17 +88,18 @@ Page Setting_Page(void)
 		if(num == 1)
 		{
 			settingflag--;
-			if(settingflag < 1)settingflag = 2;
+			if(settingflag < 1)settingflag = 3;
 		}
 		else if(num == 2)
 		{
 			settingflag++;
-			if(settingflag >2)settingflag = 1;
+			if(settingflag >3)settingflag = 1;
 		}
 		else if(num == 3)
 		{		
 			if(settingflag == 1)return CLOCK;//跳出循环,切换页面函数
 			else if(settingflag == 2)return SETTING_TIME;
+			else if(settingflag == 3)return SETTING_MOVESPEED;
 			
 		}
 		OLED_Clear();
@@ -113,6 +111,9 @@ Page Setting_Page(void)
 				break;
 			case 2://日期时间设置选项
 				OLED_ReverseArea(0,16,16*6,16);
+				break;
+			case 3://移动速度设置选项
+				OLED_ReverseArea(0,32,16*6,16);
 				break;
 			default:
 				break;
@@ -160,6 +161,8 @@ void Show_Menu_movingUI(int moveflag,uint8_t previous,uint8_t current)//位置�
 			if(previous > 1 && -16+location > 0)OLED_ShowImage(-48+location,16,32,32,icon_pointers[current-1]);//位置从左移入到1
 			OLED_Update();
 			location++;
+			if(Menu_speed >= 2)location++;//速度调整的实现
+			if(Menu_speed >= 3)location++;
 		}
 	}
 	else if(moveflag > 0)
@@ -174,16 +177,14 @@ void Show_Menu_movingUI(int moveflag,uint8_t previous,uint8_t current)//位置�
 			if(current < menuflag_max-1 && 128+16+location < 128)OLED_ShowImage(128+16+location,16,32,32,icon_pointers[current+1]);//位置从右移入到3
 			OLED_Update();
 			location--;
+			if(Menu_speed >= 2)location--;
+			if(Menu_speed >= 3)location--;
 		}
 	}
 }
 
 Page Menu_Page(void)
 {
-	//清空之前的界面，改换当下UI
-	OLED_Clear();
-	Show_Menu_UI();
-	OLED_Update();
 	//检测flag变化
 	int moveflag = 0;
 	uint8_t previous, current = menuflag; 
@@ -212,7 +213,7 @@ Page Menu_Page(void)
 			else if(menuflag == 5)return MENU_GAME;
 			
 		}
-		//移动检测
+		//移动检测与实现
 		previous = current;
 		current = menuflag;
 		moveflag = current - previous;//-1往左，+1往右
@@ -220,7 +221,6 @@ Page Menu_Page(void)
 		{
 			case 1://返回键
 				if(moveflag == -1)Show_Menu_movingUI(moveflag,previous,current);//case由2到1的变化,限制边界情况下moveflag的值，函数内部协调不来
-				
 				break;
 			case 2://秒表
 			case 3://闹钟

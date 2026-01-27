@@ -11,6 +11,7 @@
 
 extern uint8_t Pageflag;
 extern uint8_t Previous_Pageflag;
+extern uint8_t Menu_speed;
 
 /*--------------------------秒表界面--------------------------------*/
 
@@ -55,6 +56,8 @@ void Show_Menu_timer_movingUI(int moveflag)//+号向下移动（进入）；-号
 			}
 			OLED_Update();
 			location++;
+			if(Menu_speed >= 2)location++;
+			if(Menu_speed >= 3)location+=2;
 		}
 	}
 	else if(moveflag < 0)
@@ -78,6 +81,8 @@ void Show_Menu_timer_movingUI(int moveflag)//+号向下移动（进入）；-号
 			}
 			OLED_Update();
 			location++;
+			if(Menu_speed >= 2)location++;
+			if(Menu_speed >= 3)location+=2;
 		}
 	}
 }
@@ -190,6 +195,8 @@ void Show_Menu_light_movingUI(int moveflag)//+号向下移动（进入）；-号
 			}
 			OLED_Update();
 			location++;
+			if(Menu_speed >= 2)location++;
+			if(Menu_speed >= 3)location+=2;
 		}
 	}
 	else if(moveflag < 0)
@@ -211,6 +218,8 @@ void Show_Menu_light_movingUI(int moveflag)//+号向下移动（进入）；-号
 			}
 			OLED_Update();
 			location++;
+			if(Menu_speed >= 2)location++;
+			if(Menu_speed >= 3)location+=2;
 		}
 	}
 }
@@ -310,6 +319,8 @@ void Show_Menu_game_movingUI(int moveflag)//+号向下移动（进入）；-号�
 			}
 			OLED_Update();
 			location++;
+			if(Menu_speed >= 2)location++;
+			if(Menu_speed >= 3)location+=2;
 		}
 	}
 	else if(moveflag < 0)
@@ -330,6 +341,8 @@ void Show_Menu_game_movingUI(int moveflag)//+号向下移动（进入）；-号�
 			}
 			OLED_Update();
 			location++;
+			if(Menu_speed >= 2)location++;
+			if(Menu_speed >= 3)location+=2;
 		}
 	}
 }

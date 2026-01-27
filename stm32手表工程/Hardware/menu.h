@@ -12,6 +12,7 @@ typedef enum PAGE{
 	MENU_GAME = 8,
 	MENU_GAME_END = 9,
 	MENU_GAME_BEGIN = 10,
+	SETTING_MOVESPEED = 11,
 	
 }Page;
 
