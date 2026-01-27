@@ -30,7 +30,6 @@ void Show_Menu_movingUI(int moveflag,uint8_t previous,uint8_t current);
 Page Menu_Page(void);
 
 
-void Show_pageflag_proc(void);
 
 
 #endif

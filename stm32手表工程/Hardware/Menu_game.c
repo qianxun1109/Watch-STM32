@@ -15,6 +15,7 @@ extern uint8_t Previous_Pageflag;
 uint8_t game_endflag = 2;
 uint8_t game_beginflag = 1;
 uint8_t Dino_Runflag = 0;
+uint8_t Dino_end_reverseflag = 0;//用于协调结束画面的反色显示
 
 Dino_border borders[]={
 {0,43,19,21},//小恐龙(B值变化)
@@ -24,6 +25,21 @@ Dino_border borders[]={
 {128,64-22,32,22},//Dino_cacti_4
 };
 
+uint32_t Dino_historicalscores[100]={0};
+
+int Dino_find_available_position(void)
+{
+	uint8_t i;
+	for(i=0;i<100;i++)
+	{
+		if(Dino_historicalscores[i] == 0)return i;
+	}
+	return -1;
+}
+//Page Dino_scoreslist_Page(void)
+//{
+//	
+//}
 void Dino_start_UI(void)
 {
 	OLED_ShowImage(0,0,128,64,Chrome_Dino_run_start);
@@ -38,6 +54,15 @@ void Dino_end_UI(void)
 	OLED_ShowImage(64+8+4,34,16,16,Dino_rank);
 	OLED_ShowImage(64-8-4-16,34,16,16,Return);
 	OLED_ShowImage(0,borders[0].B,19,21,Dinosaur_dead);
+	if(Dino_end_reverseflag == 1)
+	{
+		OLED_ReverseArea(64-2-4*8,32-16-2,8*4,16);
+		OLED_ReverseArea(64+2,32-16-2,8*4,16);
+		OLED_ReverseArea(64-8-4-16,34,16,16);
+		OLED_ReverseArea(64-8,34,16,16);
+		OLED_ReverseArea(64+8+4,34,16,16);
+		OLED_ReverseArea(0,borders[0].B,19,21);
+	}
 }
 void Dino_runing_UI(void)
 {
@@ -104,7 +129,7 @@ uint8_t Dino_jumping_UI(uint8_t flag,uint8_t speed)//1小跳 2大跳
 	}
 	else if(flag == 2)
 	{
-		if(location >= 42)sign = 1;//大跳为42像素
+		if(location >= 44)sign = 1;//大跳为42像素
 	}
 	if(location <= 0)//一次跳跃结束，重置变量
 	{
@@ -232,9 +257,9 @@ uint8_t Dino_collision_judge(Dino_border* p)
 	}
 	return 0;//未碰撞
 }
-uint32_t Dino_Run(void)
+uint32_t Dino_Run(void)//注：返回值最高位是一个标志为，不算在分数里，要先分离
 {
-	uint32_t Dino_score = 0;//计分
+	uint32_t Dino_score = 3000;//计分
 	uint8_t Dino_speed = 1;//用于调整速度
 	uint8_t Dino_speed_sign = 0;//用于辅助调整速度
 	uint8_t Dino_background_sign = 0;//用于辅助背景调整
@@ -298,12 +323,15 @@ uint32_t Dino_Run(void)
 			default:
 				break;
 		}
+		//分数显示------------------------------------------------------
+		Dino_score_UI(Dino_score);
 		//背景主题切换----------------------------------------------------
 		if(Dino_speed == 3)OLED_Reverse();
 		if(Dino_speed == 5)OLED_Reverse();
 		if(Dino_speed == 6 && Dino_background_sign == 1)OLED_Reverse();
-		//分数显示与OLED呈现------------------------------------------------------
-		Dino_score_UI(Dino_score);
+		//结束反色标志与OLED呈现-----------------------------------------------
+		if(Dino_speed == 3 || Dino_speed == 5 || (Dino_speed == 6 && Dino_background_sign == 1))Dino_end_reverseflag = 1;
+		else Dino_end_reverseflag = 0;
 		OLED_Update();
 		//碰撞判断--------------------------------------------------------
 		Dino_collisionflag = Dino_collision_judge(borders);
@@ -315,7 +343,6 @@ uint32_t Dino_Run(void)
 		if(Dino_score >= 6000 && Dino_score < 10000)Dino_speed = 4;
 		if(Dino_score >= 10000 && Dino_score < 15000)Dino_speed = 5;
 		if(Dino_score >= 15000)Dino_speed = 6;
-		
 			//速度对分数影响
 		Dino_score++;
 		if(Dino_speed == 2 && Dino_speed_sign == 1)Dino_score++;
@@ -323,10 +350,10 @@ uint32_t Dino_Run(void)
 		if(Dino_speed == 4)Dino_score++;
 		if(Dino_speed == 5)Dino_score++;
 		if(Dino_speed == 6)Dino_score++;
-		
-		//分数对背景切换的影响
+			//分数对背景切换的影响
 		if(Dino_speed == 6 && Dino_score/5000%2 == 0)Dino_background_sign = 1;
 		else if(Dino_speed == 6 && Dino_score/5000%2 == 1)Dino_background_sign = 0;
+
 	}
 }
 
@@ -349,7 +376,12 @@ Page Dino_end_Page(void)
 		else if(num == 3)
 		{		
 			if(game_endflag == 1)return MENU_GAME;
-			else if(game_endflag == 2)Dino_Run();
+			else if(game_endflag == 2)
+			{
+				uint32_t temp = Dino_Run();
+				int position = Dino_find_available_position();
+				if(position >= 0)Dino_historicalscores[position] = temp;
+			}
 			//else if(game_endflag == 3)
 		}
 		//OLED_Clear();
@@ -371,7 +403,6 @@ Page Dino_end_Page(void)
 		OLED_Update();
 	}
 }
-
 Page Dino_begin_Page(void)
 {
 	Previous_Pageflag = Pageflag;
@@ -393,7 +424,9 @@ Page Dino_begin_Page(void)
 			if(game_beginflag == 1)return MENU_GAME;
 			else if(game_beginflag == 2)
 			{
-				Dino_Run();
+				uint32_t temp = Dino_Run();
+				int position = Dino_find_available_position();
+				if(position >= 0)Dino_historicalscores[position] = temp;
 				return MENU_GAME_END;
 			}
 		}

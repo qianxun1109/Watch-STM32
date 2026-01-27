@@ -11,8 +11,8 @@ typedef struct task{
 	uint32_t last_run;
 }task_t;
 
-task_t tasks[]={
-{Show_pageflag_proc,100,0}
+task_t tasks[]={0
+
 
 
 };

@@ -22,6 +22,9 @@ void Dino_cacti_UI(uint8_t Dino_speed);
 void Dino_scene_UI(uint8_t Dino_speed);
 void Dino_score_UI(uint32_t Dino_score);
 uint8_t Dino_collision_judge(Dino_border* p);
+int Dino_find_available_position(void);
+
+
 
 uint32_t Dino_Run(void);
 

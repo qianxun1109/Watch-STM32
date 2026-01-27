@@ -245,8 +245,4 @@ Page Menu_Page(void)
 
 
 
-void Show_pageflag_proc(void)
-{
-	OLED_ShowNum(64,48,clkflag,1,OLED_6X8);
-}
 
