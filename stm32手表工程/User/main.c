@@ -56,14 +56,17 @@ int main(void)
 			case MENU_GAME:
 				Pageflag = Menu_game_Page();
 				break;
-			case MENU_GAME_END:
+			case MENU_GAME_DINO_END:
 				Pageflag = Dino_end_Page();
 				break;
-			case MENU_GAME_BEGIN:
+			case MENU_GAME_DINO_BEGIN:
 				Pageflag = Dino_begin_Page();
 				break;
 			case SETTING_MOVESPEED:
 				Pageflag = Setting_movespeed_Page();
+				break;
+			case MENU_GAME_DINO_SCORESLIST:
+				//Pageflag = Dino_scoreslist_Page()();
 				break;
 			
 			default:
@@ -79,7 +82,7 @@ int main(void)
 //Delay_s(1);
 
 ////Dino测试
-//uint8_t Pageflag = MENU_GAME_BEGIN;
+//uint8_t Pageflag = MENU_GAME_DINO_BEGIN;
 //uint8_t Previous_Pageflag;
 
 //int main(void)
@@ -122,10 +125,10 @@ int main(void)
 //			case MENU_GAME:
 //				Pageflag = Menu_game_Page();
 //				break;
-//			case MENU_GAME_END:
+//			case MENU_GAME_DINO_END:
 //				Pageflag = Dino_end_Page();
 //				break;
-//			case MENU_GAME_BEGIN:
+//			case MENU_GAME_DINO_BEGIN:
 //				Pageflag = Dino_begin_Page();
 //				break;
 //			

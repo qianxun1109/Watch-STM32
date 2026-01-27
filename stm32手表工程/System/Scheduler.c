@@ -56,6 +56,7 @@ void TIM1_UP_IRQHandler(void)		//<<-----使用TIM1要注意中断名不一样
 		scheduler_tick++;
 		
 		Key_Tick();
+		Clock_tick();
 		
 		TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
 	}

@@ -10,19 +10,33 @@
 extern uint8_t Pageflag;
 extern uint8_t Previous_Pageflag;
 
-uint8_t Menu_speed = 2;
 /*-------------------首页时钟界面--------------------*/
-
+uint8_t clock_sign = 0;//0调节模式 1简洁模式
 uint8_t clkflag=1;
+
+void Clock_tick(void)//用于定时切换简洁模式
+{
+	static uint16_t clock_tick = 0;
+	if(clock_sign == 0)clock_tick++;//只在保持调节模式时累计计时
+	else clock_tick = 0;
+	if(clock_tick > 1000*10)//10s未操作进入简洁模式
+	{
+		clock_tick = 0;
+		clock_sign = 1;
+	}
+}
 
 void Show_Clock_UI(void)//首页时钟UI
 {
 	MyRTC_Readtime();//将此刻RTCcounter里的时间戳传递到MyRTC_Time数组里
 	//图像绘制
-	OLED_Printf(0,0,OLED_6X8,"%d-%d-%d",MyRTC_Time[0],MyRTC_Time[1],MyRTC_Time[2]);
+	if(clock_sign == 0)//调节模式
+	{
+		OLED_Printf(0,0,OLED_6X8,"%d-%d-%d",MyRTC_Time[0],MyRTC_Time[1],MyRTC_Time[2]);
+		OLED_ShowString(0,48,"菜单",OLED_8X16);
+		OLED_ShowString(96,48,"设置",OLED_8X16);
+	}
 	OLED_Printf(16,16,OLED_12X24,"%02d:%02d:%02d",MyRTC_Time[3],MyRTC_Time[4],MyRTC_Time[5]);
-	OLED_ShowString(0,48,"菜单",OLED_8X16);
-	OLED_ShowString(96,48,"设置",OLED_8X16);
 }
 
 Page CLK_Page(void)//首页时钟页切换逻辑
@@ -45,12 +59,18 @@ Page CLK_Page(void)//首页时钟页切换逻辑
 		else if(num == 3)//确定键
 		{
 			//跳出循环,切换页面
-			if(clkflag == 1)return CLOCK;
+			if(clkflag == 1)
+			{
+				if(clock_sign == 0)clock_sign = 1;
+				else if(clock_sign == 1)clock_sign = 0;
+				return CLOCK;
+			}
 			else if(clkflag == 2)return MENU;
 			else if(clkflag == 3)return SETTING;
 		}
 		OLED_Clear();//清除上次图像
 		Show_Clock_UI();//准备UI背景
+		if(clock_sign == 1)clkflag = 1;//简洁模式光标重置
 		switch(clkflag)//光标填充
 		{
 			case 1:
@@ -125,6 +145,7 @@ Page Setting_Page(void)
 
 uint8_t menuflag = 1;
 uint8_t menuflag_max = 5;
+uint8_t Menu_speed = 2;
 
 const uint8_t* const icon_pointers[]={
 	Return_icon,//0

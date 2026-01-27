@@ -4,7 +4,7 @@
 
 //修改时间戳：先改MyRTC_Time数组数据，再调用MyRTC_SetTime函数
 
-int MyRTC_Time[6]={2026,1,25,22,38,0};
+int MyRTC_Time[6]={2026,1,27,22,38,0};
 
 void MyRTC_Init(void)//注意：vbat不掉电的情况下mcu复位不能重复执行初始化
 {

@@ -371,7 +371,7 @@ Page Menu_game_Page(void)
 				Show_Menu_game_movingUI(-1);
 				return MENU;
 			}
-			else if(gameflag == 2)return MENU_GAME_BEGIN;
+			else if(gameflag == 2)return MENU_GAME_DINO_BEGIN;
 		}
 		OLED_Clear();
 		Show_Menu_game_UI();

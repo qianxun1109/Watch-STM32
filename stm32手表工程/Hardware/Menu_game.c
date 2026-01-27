@@ -427,7 +427,7 @@ Page Dino_begin_Page(void)
 				uint32_t temp = Dino_Run();
 				int position = Dino_find_available_position();
 				if(position >= 0)Dino_historicalscores[position] = temp;
-				return MENU_GAME_END;
+				return MENU_GAME_DINO_END;
 			}
 		}
 		OLED_Clear();
