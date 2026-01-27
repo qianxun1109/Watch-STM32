@@ -18,11 +18,14 @@ uint8_t Dino_Runflag = 0;
 uint8_t Dino_end_reverseflag = 0;//用于协调结束画面的反色显示
 
 Dino_border borders[]={
-{0,43,19,21},//小恐龙(B值变化)
-{128,64-23,11,23},//Dino_cacti_1(A值变化)
-{128,64-20,21,20},//Dino_cacti_2
-{128,64-15,25,15},//Dino_cacti_3
-{128,64-22,32,22},//Dino_cacti_4
+{0,43,19,21},//小恐龙(B值变化)->0
+{128,64-23,11,23},//Dino_cacti_1(A值变化)->1
+{128,64-15,10,15},//Dino_cacti_1_s->2
+{128,64-15,16,15},//Dino_cacti_2_s->3
+{128,64-20,21,20},//Dino_cacti_2->4
+{128,64-15,25,15},//Dino_cacti_3->5
+{128,64-22,32,22},//Dino_cacti_4->6
+{128,0,25,20},//Dino_bird->7(A值变化，B值选择)
 };
 
 uint32_t Dino_historicalscores[100]={0};
@@ -89,6 +92,7 @@ void Dino_runing_UI(void)
 		}
 	}
 }
+
 uint8_t Dino_jumping_UI(uint8_t flag,uint8_t speed)//1小跳 2大跳
 {
 	static int location = 0;
@@ -173,8 +177,8 @@ void Dino_cloud_UI(void)//放4页的中间两页，和仙人掌错开
 	{
 		tick = 0;
 		i =rand()%1;
-		j = rand()%128*2;//	j随机x坐标
-		k = rand()%128*2;
+		j = rand()%(128*2);//	j随机x坐标
+		k = rand()%(128*2);
 	}
 	static uint16_t location = 0;
 	if(i == 0)
@@ -193,47 +197,109 @@ void Dino_cacti_UI(uint8_t Dino_speed)
 	if(tick >= 128*2)
 	{
 		tick = 0;
-		if(Dino_speed == 2)i = rand()%3+1;//	i=1~3随机仙人掌类型
-		else if(Dino_speed == 1)i = rand()%2+1;//	i=1~2随机仙人掌类型
-		else if(Dino_speed >= 3)i = rand()%4+1;//	i=1~4随机仙人掌类型
-		j = rand()%128;//	j随机x坐标
+		if(Dino_speed == 1)i = rand()%3+1;//	i=1~3随机仙人掌类型
+		else if(Dino_speed == 2)i = rand()%5+1;//	i=1~5随机仙人掌类型
+		else if(Dino_speed >= 3)i = rand()%6+1;//	i=1~6随机仙人掌类型
+		j = rand()%100;//	j随机x坐标（避开右边那块，在检测时A值接近0可能会导致无限死亡）
 	}
 	static uint16_t location = 0;
 	if(i == 1)
 	{
 		OLED_ShowImage(128+j-location,64-23,11,23,Dino_cacti_1);//统一放在第二页的随机位置
 		borders[1].A = 128+j-location;//定位
-		borders[2].A = 128;//防止干扰位置判断
-		borders[3].A = 128;
-		borders[4].A = 128;
 	}
 	else if(i == 2)
 	{
-		OLED_ShowImage(128+j-location,64-20,21,20,Dino_cacti_2);
+		OLED_ShowImage(128+j-location,64-15,10,15,Dino_cacti_1_s);
 		borders[2].A = 128+j-location;
-		borders[1].A = 128;
-		borders[3].A = 128;
-		borders[4].A = 128;
 	}
 	else if(i == 3)
 	{
-		OLED_ShowImage(128+j-location,64-15,25,15,Dino_cacti_3);
+		OLED_ShowImage(128+j-location,64-15,16,15,Dino_cacti_2_s);
 		borders[3].A = 128+j-location;
-		borders[1].A = 128;
-		borders[2].A = 128;
-		borders[4].A = 128;
 	}
 	else if(i == 4)
 	{
-		OLED_ShowImage(128+j-location,64-22,32,22,Dino_cacti_4);
+		OLED_ShowImage(128+j-location,64-20,21,20,Dino_cacti_2);
 		borders[4].A = 128+j-location;
-		borders[1].A = 128;
-		borders[2].A = 128;
-		borders[3].A = 128;
+	}
+	else if(i == 5)
+	{
+		OLED_ShowImage(128+j-location,64-15,25,15,Dino_cacti_3);
+		borders[5].A = 128+j-location;
+	}
+	else if(i == 6)
+	{
+		OLED_ShowImage(128+j-location,64-22,32,22,Dino_cacti_4);
+		borders[6].A = 128+j-location;
 	}
 	tick++;
 	location++;
 	if(location >= 128*2)location = 0;//重置
+}
+void Dino_bird_UI(uint8_t Dino_speed)//放10页的中间
+{
+	static uint8_t count = 0;
+	static uint8_t sign = 0;//用于调节bird的动态变化
+	static uint16_t tick = 128*9;
+	static uint8_t i,j;
+	if(tick >= 128*9)
+	{
+		tick = 0;
+		i = rand()%2+1;
+		j = rand()%(128*5);//	j随机x坐标
+	}
+	static uint16_t location = 0;
+	if(sign)
+	{
+		count++;
+		if(i == 1)//上方
+		{
+			OLED_ShowImage(128+j-location,16,25,20,Dino_bird_1);//统一放在中间的随机位置
+			borders[7].B = 16;
+		}
+		else if(i == 2)//下方
+		{
+			OLED_ShowImage(128+j-location,40,25,20,Dino_bird_1);
+			borders[7].B = 40;
+		}
+		if(count >= 6)
+		{
+			sign = 0;
+			count = 0;
+		}
+	}
+	else
+	{
+		count++;
+		if(i == 1)//上方
+		{
+			OLED_ShowImage(128+j-location,16,25,20,Dino_bird_2);
+			borders[7].B = 16;
+		}
+		else if(i == 2)//下方
+		{
+			OLED_ShowImage(128+j-location,40,25,20,Dino_bird_2);
+			borders[7].B = 40;
+		}
+		if(count >= 6)
+		{
+			sign = 1;
+			count = 0;
+		}
+	}
+	
+	if(borders[7].A + borders[7].length <= 0)
+	{
+		// 鸟完全出屏后清空碰撞框，重置局部static变量
+		borders[7].A = 128*2; // 重置到屏幕右侧外更远的地方
+		borders[7].B = 0;     // 重置高度为0，彻底脱离恐龙碰撞区间
+	}
+	else borders[7].A = 128+j-location;
+
+	tick++;
+	location++;
+	if(location >= 128*9)location = 0;//重置
 }
 void Dino_score_UI(uint32_t Dino_score)
 {
@@ -244,22 +310,22 @@ void Dino_scene_UI(uint8_t Dino_speed)
 	Dino_ground_UI();
 	Dino_cloud_UI();
 	Dino_cacti_UI(Dino_speed);
+	//if(Dino_speed >= 4)Dino_bird_UI(Dino_speed);
 }
-
-
 
 uint8_t Dino_collision_judge(Dino_border* p)
 {
 	uint8_t i = 0;
-	for(i=1;i<=4;i++)
+	for(i=1;i<=6;i++)
 	{
-		if(p[0].B + p[0].high > p[i].B && p[0].length > p[i].A && p[i].A + p[i].length > 0)return 1;//碰撞
+		//if(p[i].A+p[i].length >0 && p[i].A < 128)//只对在屏幕里的点判断（可能出现仙人掌移出最后A卡在0左附近，导致离奇死亡）
+		if(p[0].B + p[0].high > p[i].B && p[0].length > p[i].A && p[i].A + p[i].length > 0 && p[0].B < p[i].B + p[i].high)return 1;//碰撞
 	}
 	return 0;//未碰撞
 }
 uint32_t Dino_Run(void)//注：返回值最高位是一个标志为，不算在分数里，要先分离
 {
-	uint32_t Dino_score = 3000;//计分
+	uint32_t Dino_score = 24000;//计分
 	uint8_t Dino_speed = 1;//用于调整速度
 	uint8_t Dino_speed_sign = 0;//用于辅助调整速度
 	uint8_t Dino_background_sign = 0;//用于辅助背景调整
@@ -285,7 +351,7 @@ uint32_t Dino_Run(void)//注：返回值最高位是一个标志为，不算在�
 			Dino_scene_UI(Dino_speed);
 		}
 		else if(Dino_speed == 2 && Dino_speed_sign == 0)Dino_speed_sign = 1;
-			//speed=3
+			//speed更大
 		if(Dino_speed >= 3)
 		{
 			OLED_Clear();
@@ -302,6 +368,11 @@ uint32_t Dino_Run(void)//注：返回值最高位是一个标志为，不算在�
 			Dino_scene_UI(Dino_speed);
 		}
 		if(Dino_speed >= 6)
+		{
+			OLED_Clear();
+			Dino_scene_UI(Dino_speed);
+		}
+		if(Dino_speed >= 7)
 		{
 			OLED_Clear();
 			Dino_scene_UI(Dino_speed);
@@ -328,9 +399,9 @@ uint32_t Dino_Run(void)//注：返回值最高位是一个标志为，不算在�
 		//背景主题切换----------------------------------------------------
 		if(Dino_speed == 3)OLED_Reverse();
 		if(Dino_speed == 5)OLED_Reverse();
-		if(Dino_speed == 6 && Dino_background_sign == 1)OLED_Reverse();
+		if(Dino_speed == 7 && Dino_background_sign == 1)OLED_Reverse();
 		//结束反色标志与OLED呈现-----------------------------------------------
-		if(Dino_speed == 3 || Dino_speed == 5 || (Dino_speed == 6 && Dino_background_sign == 1))Dino_end_reverseflag = 1;
+		if(Dino_speed == 3 || Dino_speed == 5 || (Dino_speed == 7 && Dino_background_sign == 1))Dino_end_reverseflag = 1;
 		else Dino_end_reverseflag = 0;
 		OLED_Update();
 		//碰撞判断--------------------------------------------------------
@@ -342,17 +413,19 @@ uint32_t Dino_Run(void)//注：返回值最高位是一个标志为，不算在�
 		if(Dino_score >= 3000 && Dino_score < 6000)Dino_speed = 3;
 		if(Dino_score >= 6000 && Dino_score < 10000)Dino_speed = 4;
 		if(Dino_score >= 10000 && Dino_score < 15000)Dino_speed = 5;
-		if(Dino_score >= 15000)Dino_speed = 6;
+		if(Dino_score >= 15000 && Dino_score < 20000)Dino_speed = 6;
+		if(Dino_score >= 20000)Dino_speed = 7;
 			//速度对分数影响
 		Dino_score++;
 		if(Dino_speed == 2 && Dino_speed_sign == 1)Dino_score++;
-		if(Dino_speed == 3)Dino_score++;
-		if(Dino_speed == 4)Dino_score++;
-		if(Dino_speed == 5)Dino_score++;
-		if(Dino_speed == 6)Dino_score++;
+		if(Dino_speed >= 3)Dino_score++;
+		if(Dino_speed >= 4)Dino_score++;
+		if(Dino_speed >= 5)Dino_score++;
+		if(Dino_speed >= 6)Dino_score++;
+		if(Dino_speed >= 7)Dino_score++;
 			//分数对背景切换的影响
-		if(Dino_speed == 6 && Dino_score/5000%2 == 0)Dino_background_sign = 1;
-		else if(Dino_speed == 6 && Dino_score/5000%2 == 1)Dino_background_sign = 0;
+		if(Dino_speed == 7 && Dino_score/5000%2 == 0)Dino_background_sign = 1;
+		else if(Dino_speed == 7 && Dino_score/5000%2 == 1)Dino_background_sign = 0;
 
 	}
 }

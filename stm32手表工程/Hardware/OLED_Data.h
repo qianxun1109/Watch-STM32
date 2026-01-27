@@ -51,13 +51,17 @@ extern const uint8_t Dinosaur_dead[];
 extern const uint8_t Dinosaur_up[];
 extern const uint8_t Begin[];
 extern const uint8_t Dino_cacti_1[];
+extern const uint8_t Dino_cacti_1_s[];
 extern const uint8_t Dino_cacti_2[];
+extern const uint8_t Dino_cacti_2_s[];
 extern const uint8_t Dino_cacti_3[];
 extern const uint8_t Dino_cacti_4[];
 extern const uint8_t Dino_cloud_1[];
 extern const uint8_t Dino_cloud_2[];
 extern const uint8_t Dino_ground_1[];
 extern const uint8_t Dino_ground_2[];
+extern const uint8_t Dino_bird_1[];
+extern const uint8_t Dino_bird_2[];
 extern const uint8_t Dino_restart[];
 extern const uint8_t Dino_rank[];
 

@@ -21,6 +21,8 @@ void Dino_cloud_UI(void);
 void Dino_cacti_UI(uint8_t Dino_speed);
 void Dino_scene_UI(uint8_t Dino_speed);
 void Dino_score_UI(uint32_t Dino_score);
+void Dino_bird_UI(uint8_t Dino_speed);
+
 uint8_t Dino_collision_judge(Dino_border* p);
 int Dino_find_available_position(void);
 

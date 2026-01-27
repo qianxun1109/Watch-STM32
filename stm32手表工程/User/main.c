@@ -14,7 +14,7 @@
 #include "Delay.h"
 #include "Setting_list1.h"
 
-uint8_t Pageflag = CLOCK;
+uint8_t Pageflag = MENU_GAME_DINO_BEGIN;
 uint8_t Previous_Pageflag;
 
 int main(void)
