@@ -12,6 +12,7 @@ typedef struct Dino_Border{//用与碰撞判断
 	int high;
 }Dino_border;
 
+void Dino_Reset(void);
 void Dino_end_UI(void);
 void Dino_start_UI(void);
 void Dino_runing_UI(void);
@@ -21,19 +22,22 @@ void Dino_cloud_UI(void);
 void Dino_cacti_UI(uint8_t Dino_speed);
 void Dino_scene_UI(uint8_t Dino_speed);
 void Dino_score_UI(uint32_t Dino_score);
-void Dino_bird_UI(uint8_t Dino_speed);
+//void Dino_bird_UI(uint8_t Dino_speed);
+void Dino_scoreslist_UI(void);
 
 uint8_t Dino_collision_judge(Dino_border* p);
 int Dino_find_available_position(void);
 
-
+void Dino_mode_tick(void);
 
 uint32_t Dino_Run(void);
 
 Page Dino_end_Page(void);
 Page Dino_begin_Page(void);
+Page Dino_scoreslist_Page(void);
 
-
+void Dino_score_sort(void);
+void Dino_score_add(uint32_t score);
 
 
 

@@ -748,7 +748,7 @@ I (.\Library\stm32f10x_usart.h)(0x4D783BB4)
 I (.\Library\stm32f10x_wwdg.h)(0x4D783BB4)
 I (.\Library\misc.h)(0x4D783BB4)
 F (.\Library\stm32f10x_wwdg.h)(0x4D783BB4)()
-F (.\User\main.c)(0x69785427)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I .\Start -I .\User -I .\Library -I .\Hardware -I .\System --no-multibyte-chars-I.\RTE\_Target_1-IE:\Keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-IE:\Keil5\ARM\CMSIS\Include-D__UVISION_VERSION="524" -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER-o .\objects\main.o --omf_browse .\objects\main.crf --depend .\objects\main.d)
+F (.\User\main.c)(0x6978CDBD)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I .\Start -I .\User -I .\Library -I .\Hardware -I .\System --no-multibyte-chars-I.\RTE\_Target_1-IE:\Keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-IE:\Keil5\ARM\CMSIS\Include-D__UVISION_VERSION="524" -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER-o .\objects\main.o --omf_browse .\objects\main.crf --depend .\objects\main.d)
 I (.\Start\stm32f10x.h)(0x4D783CB4)
 I (.\Start\core_cm3.h)(0x4D523B58)
 I (E:\Keil5\ARM\ARMCC\include\stdint.h)(0x588B8344)
@@ -781,14 +781,14 @@ I (.\Hardware\OLED.h)(0x69730D05)
 I (.\Hardware\OLED_Data.h)(0x697864F8)
 I (.\System\MyRTC.h)(0x697455C0)
 I (.\Hardware\MPU6050.h)(0x6966173A)
-I (.\Hardware\menu.h)(0x697852A0)
+I (.\Hardware\menu.h)(0x6978B915)
 I (.\Hardware\Key.h)(0x6973223B)
 I (.\System\Scheduler.h)(0x6975A632)
 I (.\Hardware\Setting_time.h)(0x697476C6)
 I (.\Hardware\Menu_list1.h)(0x6975D705)
 I (.\Hardware\Timer.h)(0x6975B437)
 I (.\Hardware\LED.h)(0x615AC60A)
-I (.\Hardware\Menu_game.h)(0x69786BFE)
+I (.\Hardware\Menu_game.h)(0x6978CD04)
 I (E:\Keil5\ARM\ARMCC\include\stdlib.h)(0x588B8344)
 I (.\System\Delay.h)(0x6130920E)
 I (.\Hardware\Setting_list1.h)(0x69783022)
@@ -899,7 +899,7 @@ I (Hardware\OLED.h)(0x69730D05)
 I (Hardware\OLED_Data.h)(0x697864F8)
 F (.\Hardware\MPU6050.h)(0x6966173A)()
 F (.\Hardware\MPU6050_Reg.h)(0x6398543A)()
-F (.\Hardware\menu.h)(0x697852A0)()
+F (.\Hardware\menu.h)(0x6978B915)()
 F (.\Hardware\menu.c)(0x6978554B)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I .\Start -I .\User -I .\Library -I .\Hardware -I .\System --no-multibyte-chars-I.\RTE\_Target_1-IE:\Keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-IE:\Keil5\ARM\CMSIS\Include-D__UVISION_VERSION="524" -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER-o .\objects\menu.o --omf_browse .\objects\menu.crf --depend .\objects\menu.d)
 I (.\Start\stm32f10x.h)(0x4D783CB4)
 I (.\Start\core_cm3.h)(0x4D523B58)
@@ -935,7 +935,7 @@ I (.\System\MyRTC.h)(0x697455C0)
 I (Hardware\Key.h)(0x6973223B)
 I (.\System\Scheduler.h)(0x6975A632)
 I (Hardware\Setting_time.h)(0x697476C6)
-I (Hardware\menu.h)(0x697852A0)
+I (Hardware\menu.h)(0x6978B915)
 F (.\Hardware\Key.c)(0x69733269)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I .\Start -I .\User -I .\Library -I .\Hardware -I .\System --no-multibyte-chars-I.\RTE\_Target_1-IE:\Keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-IE:\Keil5\ARM\CMSIS\Include-D__UVISION_VERSION="524" -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER-o .\objects\key.o --omf_browse .\objects\key.crf --depend .\objects\key.d)
 I (.\Start\stm32f10x.h)(0x4D783CB4)
 I (.\Start\core_cm3.h)(0x4D523B58)
@@ -1001,7 +1001,7 @@ I (Hardware\OLED_Data.h)(0x697864F8)
 I (.\System\MyRTC.h)(0x697455C0)
 I (Hardware\Key.h)(0x6973223B)
 I (.\System\Scheduler.h)(0x6975A632)
-I (Hardware\menu.h)(0x697852A0)
+I (Hardware\menu.h)(0x6978B915)
 F (.\Hardware\Setting_time.h)(0x697476C6)()
 F (.\Hardware\Menu_list1.c)(0x6978354F)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I .\Start -I .\User -I .\Library -I .\Hardware -I .\System --no-multibyte-chars-I.\RTE\_Target_1-IE:\Keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-IE:\Keil5\ARM\CMSIS\Include-D__UVISION_VERSION="524" -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER-o .\objects\menu_list1.o --omf_browse .\objects\menu_list1.crf --depend .\objects\menu_list1.d)
 I (.\Start\stm32f10x.h)(0x4D783CB4)
@@ -1037,10 +1037,10 @@ I (Hardware\OLED_Data.h)(0x697864F8)
 I (.\System\MyRTC.h)(0x697455C0)
 I (Hardware\Key.h)(0x6973223B)
 I (.\System\Scheduler.h)(0x6975A632)
-I (Hardware\menu.h)(0x697852A0)
+I (Hardware\menu.h)(0x6978B915)
 I (.\System\Delay.h)(0x6130920E)
 I (Hardware\LED.h)(0x615AC60A)
-I (Hardware\Menu_game.h)(0x69786BFE)
+I (Hardware\Menu_game.h)(0x6978CD04)
 F (.\Hardware\Menu_list1.h)(0x6975D705)()
 F (.\Hardware\Timer.c)(0x6975B447)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I .\Start -I .\User -I .\Library -I .\Hardware -I .\System --no-multibyte-chars-I.\RTE\_Target_1-IE:\Keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-IE:\Keil5\ARM\CMSIS\Include-D__UVISION_VERSION="524" -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER-o .\objects\timer.o --omf_browse .\objects\timer.crf --depend .\objects\timer.d)
 I (.\Start\stm32f10x.h)(0x4D783CB4)
@@ -1102,7 +1102,7 @@ I (.\Library\stm32f10x_usart.h)(0x4D783BB4)
 I (.\Library\stm32f10x_wwdg.h)(0x4D783BB4)
 I (.\Library\misc.h)(0x4D783BB4)
 F (.\Hardware\LED.h)(0x615AC60A)()
-F (.\Hardware\Menu_game.c)(0x6978A78A)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I .\Start -I .\User -I .\Library -I .\Hardware -I .\System --no-multibyte-chars-I.\RTE\_Target_1-IE:\Keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-IE:\Keil5\ARM\CMSIS\Include-D__UVISION_VERSION="524" -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER-o .\objects\menu_game.o --omf_browse .\objects\menu_game.crf --depend .\objects\menu_game.d)
+F (.\Hardware\Menu_game.c)(0x6978D8D0)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I .\Start -I .\User -I .\Library -I .\Hardware -I .\System --no-multibyte-chars-I.\RTE\_Target_1-IE:\Keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-IE:\Keil5\ARM\CMSIS\Include-D__UVISION_VERSION="524" -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER-o .\objects\menu_game.o --omf_browse .\objects\menu_game.crf --depend .\objects\menu_game.d)
 I (.\Start\stm32f10x.h)(0x4D783CB4)
 I (.\Start\core_cm3.h)(0x4D523B58)
 I (E:\Keil5\ARM\ARMCC\include\stdint.h)(0x588B8344)
@@ -1136,11 +1136,11 @@ I (Hardware\OLED_Data.h)(0x697864F8)
 I (.\System\MyRTC.h)(0x697455C0)
 I (Hardware\Key.h)(0x6973223B)
 I (.\System\Scheduler.h)(0x6975A632)
-I (Hardware\menu.h)(0x697852A0)
+I (Hardware\menu.h)(0x6978B915)
 I (.\System\Delay.h)(0x6130920E)
 I (E:\Keil5\ARM\ARMCC\include\stdlib.h)(0x588B8344)
-I (Hardware\Menu_game.h)(0x69786BFE)
-F (.\Hardware\Menu_game.h)(0x69786BFE)()
+I (Hardware\Menu_game.h)(0x6978CD04)
+F (.\Hardware\Menu_game.h)(0x6978CD04)()
 F (.\Hardware\Setting_list1.c)(0x697830EB)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I .\Start -I .\User -I .\Library -I .\Hardware -I .\System --no-multibyte-chars-I.\RTE\_Target_1-IE:\Keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-IE:\Keil5\ARM\CMSIS\Include-D__UVISION_VERSION="524" -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER-o .\objects\setting_list1.o --omf_browse .\objects\setting_list1.crf --depend .\objects\setting_list1.d)
 I (.\Start\stm32f10x.h)(0x4D783CB4)
 I (.\Start\core_cm3.h)(0x4D523B58)
@@ -1175,7 +1175,7 @@ I (Hardware\OLED_Data.h)(0x697864F8)
 I (.\System\MyRTC.h)(0x697455C0)
 I (Hardware\Key.h)(0x6973223B)
 I (.\System\Scheduler.h)(0x6975A632)
-I (Hardware\menu.h)(0x697852A0)
+I (Hardware\menu.h)(0x6978B915)
 F (.\Hardware\Setting_list1.h)(0x69783022)()
 F (.\System\Delay.c)(0x61309210)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I .\Start -I .\User -I .\Library -I .\Hardware -I .\System --no-multibyte-chars-I.\RTE\_Target_1-IE:\Keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-IE:\Keil5\ARM\CMSIS\Include-D__UVISION_VERSION="524" -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER-o .\objects\delay.o --omf_browse .\objects\delay.crf --depend .\objects\delay.d)
 I (.\Start\stm32f10x.h)(0x4D783CB4)
@@ -1207,7 +1207,7 @@ I (.\Library\stm32f10x_usart.h)(0x4D783BB4)
 I (.\Library\stm32f10x_wwdg.h)(0x4D783BB4)
 I (.\Library\misc.h)(0x4D783BB4)
 F (.\System\Delay.h)(0x6130920E)()
-F (.\System\Scheduler.c)(0x697852B2)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I .\Start -I .\User -I .\Library -I .\Hardware -I .\System --no-multibyte-chars-I.\RTE\_Target_1-IE:\Keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-IE:\Keil5\ARM\CMSIS\Include-D__UVISION_VERSION="524" -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER-o .\objects\scheduler.o --omf_browse .\objects\scheduler.crf --depend .\objects\scheduler.d)
+F (.\System\Scheduler.c)(0x6978BC58)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I .\Start -I .\User -I .\Library -I .\Hardware -I .\System --no-multibyte-chars-I.\RTE\_Target_1-IE:\Keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-IE:\Keil5\ARM\CMSIS\Include-D__UVISION_VERSION="524" -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER-o .\objects\scheduler.o --omf_browse .\objects\scheduler.crf --depend .\objects\scheduler.d)
 I (.\Start\stm32f10x.h)(0x4D783CB4)
 I (.\Start\core_cm3.h)(0x4D523B58)
 I (E:\Keil5\ARM\ARMCC\include\stdint.h)(0x588B8344)
@@ -1237,7 +1237,8 @@ I (.\Library\stm32f10x_usart.h)(0x4D783BB4)
 I (.\Library\stm32f10x_wwdg.h)(0x4D783BB4)
 I (.\Library\misc.h)(0x4D783BB4)
 I (.\Hardware\Key.h)(0x6973223B)
-I (.\Hardware\menu.h)(0x697852A0)
+I (.\Hardware\menu.h)(0x6978B915)
+I (.\Hardware\Menu_game.h)(0x6978CD04)
 F (.\System\Scheduler.h)(0x6975A632)()
 F (.\System\MyRTC.c)(0x69783460)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I .\Start -I .\User -I .\Library -I .\Hardware -I .\System --no-multibyte-chars-I.\RTE\_Target_1-IE:\Keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-IE:\Keil5\ARM\CMSIS\Include-D__UVISION_VERSION="524" -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER-o .\objects\myrtc.o --omf_browse .\objects\myrtc.crf --depend .\objects\myrtc.d)
 I (.\Start\stm32f10x.h)(0x4D783CB4)

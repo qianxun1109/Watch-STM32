@@ -1,6 +1,7 @@
 #include "stm32f10x.h"                  // Device header
 #include "Key.h"
 #include "menu.h"
+#include "Menu_game.h"
 
 uint32_t scheduler_tick;
 uint8_t task_num;
@@ -57,6 +58,7 @@ void TIM1_UP_IRQHandler(void)		//<<-----使用TIM1要注意中断名不一样
 		
 		Key_Tick();
 		Clock_tick();
+		Dino_mode_tick();
 		
 		TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
 	}

@@ -66,7 +66,7 @@ int main(void)
 				Pageflag = Setting_movespeed_Page();
 				break;
 			case MENU_GAME_DINO_SCORESLIST:
-				//Pageflag = Dino_scoreslist_Page()();
+				Pageflag = Dino_scoreslist_Page();
 				break;
 			
 			default:

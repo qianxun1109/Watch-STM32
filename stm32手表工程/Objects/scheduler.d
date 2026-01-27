@@ -30,3 +30,4 @@
 .\objects\scheduler.o: .\Library\misc.h
 .\objects\scheduler.o: .\Hardware\Key.h
 .\objects\scheduler.o: .\Hardware\menu.h
+.\objects\scheduler.o: .\Hardware\Menu_game.h
