@@ -31,3 +31,4 @@
 .\objects\scheduler.o: .\Hardware\Key.h
 .\objects\scheduler.o: .\Hardware\menu.h
 .\objects\scheduler.o: .\Hardware\Menu_game.h
+.\objects\scheduler.o: .\Hardware\Timer.h

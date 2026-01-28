@@ -13,18 +13,15 @@ extern uint8_t Pageflag;
 extern uint8_t Previous_Pageflag;
 extern uint8_t Menu_speed;
 
-/*--------------------------秒表界面--------------------------------*/
-
-int MyTimer_time[3]={0,0,0};//秒表时间(时，分，秒)
-
 extern uint8_t menuflag;
 extern uint8_t menuflag_max;
 extern const uint8_t* const icon_pointers[];
+/*--------------------------秒表界面--------------------------------*/
+int MyTimer_time[3]={0,0,0};//秒表时间(时，分，秒)
 uint8_t timerflag = 1;
 
 void Show_Menu_timer_UI(void)
 {
-	MyRTC_Readtime();
 	OLED_ShowImage(0,0,16,16,Return);
 	OLED_Printf(16,16,OLED_12X24,"%02d:%02d:%02d",MyTimer_time[0],MyTimer_time[1],MyTimer_time[2]);
 	OLED_ShowString(0,48,"开始",OLED_8X16);
@@ -47,7 +44,7 @@ void Show_Menu_timer_movingUI(int moveflag)//+号向下移动（进入）；-号
 				if(menuflag < menuflag_max)OLED_ShowImage(96,16-location,32,32,icon_pointers[menuflag-1+1]);//右
 			}
 			if(location > 16)//内容向上移入
-			{
+			{			/*移植时修改为相关的UI，固定偏移+64+16-location*/
 				OLED_ShowImage(0,0+64+16-location,16,16,Return);
 				OLED_Printf(16,16+64+16-location,OLED_12X24,"%02d:%02d:%02d",MyTimer_time[0],MyTimer_time[1],MyTimer_time[2]);
 				OLED_ShowString(0,48+64+16-location,"开始",OLED_8X16);
@@ -72,7 +69,7 @@ void Show_Menu_timer_movingUI(int moveflag)//+号向下移动（进入）；-号
 				if(menuflag < menuflag_max)OLED_ShowImage(96,16+location-64-16,32,32,icon_pointers[menuflag-1+1]);//右
 			}
 			if(location < 64)
-			{
+			{				/*移植时修改为相关的UI，固定偏移+location*/
 				OLED_ShowImage(0,0+location,16,16,Return);
 				OLED_Printf(16,16+location,OLED_12X24,"%02d:%02d:%02d",MyTimer_time[0],MyTimer_time[1],MyTimer_time[2]);
 				OLED_ShowString(0,48+location,"开始",OLED_8X16);
@@ -80,6 +77,7 @@ void Show_Menu_timer_movingUI(int moveflag)//+号向下移动（进入）；-号
 				OLED_ShowString(96,48+location,"重置",OLED_8X16);
 			}
 			OLED_Update();
+			//移速控制
 			location++;
 			if(Menu_speed >= 2)location++;
 			if(Menu_speed >= 3)location+=2;
@@ -391,6 +389,112 @@ Page Menu_game_Page(void)
 	
 }
 
+/*---------------------------闹钟界面--------------------------------*/
+uint8_t alarmflag = 1;
+
+void Show_Menu_alarm_UI(void)
+{
+	OLED_ShowImage(0,0,16,16,Return);
+	OLED_ShowString(0,16,"自定义",OLED_8X16);
+	OLED_ShowString(0,32,"倒计时",OLED_8X16);
+}
+void Show_Menu_alarm_movingUI(int moveflag)//+号向下移动（进入）；-号向上移动（退出）
+{
+	uint8_t location = 0;
+	if(moveflag > 0)
+	{
+		while(location < 64+16)//总向下移动距离为64+16，其中64为基本翻页距离，16为额外间距
+		{
+			OLED_Clear();
+			if(location < 48)//图标向上移出
+			{
+				OLED_ShowImage(48,16-location,32,32,icon_pointers[menuflag-1]);//中间
+				if(menuflag > 1)OLED_ShowImage(0,16-location,32,32,icon_pointers[menuflag-1-1]);//左
+				if(menuflag < menuflag_max)OLED_ShowImage(96,16-location,32,32,icon_pointers[menuflag-1+1]);//右
+			}
+			if(location > 16)//内容向上移入
+			{
+				OLED_ShowImage(0,0+64+16-location,16,16,Return);
+				OLED_ShowString(0,16+64+16-location,"自定义",OLED_8X16);
+				OLED_ShowString(0,32+64+16-location,"倒计时",OLED_8X16);
+			}
+			OLED_Update();
+			location++;
+			if(Menu_speed >= 2)location++;
+			if(Menu_speed >= 3)location+=2;
+		}
+	}
+	else if(moveflag < 0)
+	{
+		while(location < 64+16)//总向上移动距离为64+16，其中64为基本翻页距离，16为额外间距
+		{
+			OLED_Clear();
+			if(location > 16)
+			{
+				OLED_ShowImage(48,16+location-64-16,32,32,icon_pointers[menuflag-1]);//中间
+				if(menuflag > 1)OLED_ShowImage(0,16+location-64-16,32,32,icon_pointers[menuflag-1-1]);//左
+				if(menuflag < menuflag_max)OLED_ShowImage(96,16+location-64-16,32,32,icon_pointers[menuflag-1+1]);//右
+			}
+			if(location < 64)
+			{
+				OLED_ShowImage(0,0+location,16,16,Return);
+				OLED_ShowString(0,16+location,"自定义",OLED_8X16);
+				OLED_ShowString(0,32+location,"倒计时",OLED_8X16);
+			}
+			OLED_Update();
+			location++;
+			if(Menu_speed >= 2)location++;
+			if(Menu_speed >= 3)location+=2;
+		}
+	}
+}
+Page Menu_alarm_Page(void)
+{
+	if(Previous_Pageflag == MENU)Show_Menu_alarm_movingUI(1);//从菜单跳转时滑动进入
+	
+	Previous_Pageflag = Pageflag;
+	while(1)
+	{
+		uint8_t num=Key_GetNum();
+		if(num == 1)
+		{
+			alarmflag--;
+			if(alarmflag < 1)alarmflag = 3;
+		}
+		else if(num == 2)
+		{
+			alarmflag++;
+			if(alarmflag >3)alarmflag = 1;
+		}
+		else if(num == 3)
+		{		
+			if(alarmflag == 1)
+			{
+				Show_Menu_alarm_movingUI(-1);
+				return MENU;
+			}
+			else if(alarmflag == 2)return MENU_ALARM_CUSTOMIZE;
+			else if(alarmflag == 3)return MENU_ALARM_COUNTDOWN;
+		}
+		OLED_Clear();
+		Show_Menu_alarm_UI();
+		switch(alarmflag)
+		{
+			case 1://返回键
+				OLED_ReverseArea(0,0,16,16);
+				break;
+			case 2://自定义
+				OLED_ReverseArea(0,16,16*3,16);
+				break;
+			case 3://倒计时
+				OLED_ReverseArea(0,32,16*3,16);
+				break;
+			default:
+				break;
+		}
+		OLED_Update();
+	}
+}
 
 
 

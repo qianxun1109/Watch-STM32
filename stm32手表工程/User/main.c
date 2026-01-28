@@ -13,9 +13,10 @@
 #include "stdlib.h"
 #include "Delay.h"
 #include "Setting_list1.h"
+#include "Menu_alarm.h"
 
-uint8_t Pageflag = MENU_GAME_DINO_BEGIN;
-uint8_t Previous_Pageflag;
+Page Pageflag = CLOCK;
+Page Previous_Pageflag;
 
 int main(void)
 {
@@ -25,6 +26,7 @@ int main(void)
 	LED_Init();
 	Timer_Init();
 	Scheduler_Init();
+	Alarm_Init();
 	//MPU6050_Init();
 	
 	srand(66666666);
@@ -48,7 +50,7 @@ int main(void)
 				Pageflag = Menu_timer_Page();
 				break;
 			case MENU_ALARM:
-				//Pageflag = Menu_alarm_Page();
+				Pageflag = Menu_alarm_Page();
 				break;
 			case MENU_LIGHT:
 				Pageflag = Menu_light_Page();
@@ -67,6 +69,15 @@ int main(void)
 				break;
 			case MENU_GAME_DINO_SCORESLIST:
 				Pageflag = Dino_scoreslist_Page();
+				break;
+			case MENU_ALARM_CUSTOMIZE:
+				Pageflag = Menu_alarm_customize_Page();
+				break;
+			case MENU_ALARM_COUNTDOWN:
+				Pageflag = Menu_alarm_countdown_Page();
+				break;
+			case MENU_ALARM_COUNTDOWN_SETTING:
+				Pageflag = Menu_alarm_countdown_setting_Page();
 				break;
 			
 			default:

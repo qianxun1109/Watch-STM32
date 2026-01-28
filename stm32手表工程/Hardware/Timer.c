@@ -1,6 +1,13 @@
 #include "stm32f10x.h"                  // Device header
+#include "menu.h"
+#include "Menu_alarm.h"
 
+extern void Alarm_ON(void);
 extern int MyTimer_time[3];
+extern int MyAlarm_countdowntime[3];
+extern Page Pageflag;
+
+uint8_t MyAlarm_countdowntime_sign = 0;//闹钟响的标志
 
 void Timer_Init(void)
 {
@@ -44,13 +51,62 @@ void MyTimer_time_up(void)
 		MyTimer_time[1] = 0;
 	}
 }
+void MyAlarm_countdowntime_ctrl(uint8_t flag)//倒计时闹钟相应逻辑//注：要放在scheduler的定时器里，TIM2在结束后会被关闭
+{
+	static uint8_t tick = 0;
+	if(flag == 1)
+	{
+		if(tick < 6)
+		{
+			if(tick%2==0)Alarm_ON();
+			else if(tick%2==1)Alarm_OFF();
+			tick++;
+		}
+		else
+		{	
+			tick = 0;
+			MyAlarm_countdowntime_sign = 0;//利用这个标志位切换执行状态可以避免static的弊端
+		}       
+	}
+	else if(flag == 0)
+	{
+		tick = 0;
+		Alarm_OFF();
+	}
+}
+
+void MyAlarm_countdowntime_down(void)
+{
+	MyAlarm_countdowntime[2]--;
+	if(MyAlarm_countdowntime[2] < 0)
+	{
+		MyAlarm_countdowntime[1]--;
+		MyAlarm_countdowntime[2] = 59;
+	}
+	if(MyAlarm_countdowntime[1] < 0)
+	{
+		MyAlarm_countdowntime[0]--;
+		MyAlarm_countdowntime[1] = 59;
+	}
+	if(MyAlarm_countdowntime[0] == 0 && MyAlarm_countdowntime[1] == 0 && MyAlarm_countdowntime[2] == 0)
+	{
+		alarm_countdown_stop();
+		MyAlarm_countdowntime_sign = 1;
+	}
+}
 
 void TIM2_IRQHandler()
 {
 	if(TIM_GetITStatus(TIM2,TIM_IT_Update)==SET)
 	{
-		MyTimer_time_up();
+		if(Pageflag == MENU_TIMER)MyTimer_time_up();
+		if(Pageflag == MENU_ALARM_COUNTDOWN)MyAlarm_countdowntime_down();
+		
 		
 		TIM_ClearITPendingBit(TIM2,TIM_IT_Update);
 	}
 }
+
+
+
+

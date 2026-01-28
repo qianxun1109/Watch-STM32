@@ -16,7 +16,10 @@ Page Menu_light_Page(void);
 Page Menu_game_Page(void);
 void Show_Menu_game_UI(void);
 void Show_Menu_game_movingUI(int moveflag);
-
+//闹钟界面相关函数
+void Show_Menu_alarm_UI(void);
+void Show_Menu_alarm_movingUI(int moveflag);
+Page Menu_alarm_Page(void);
 
 
 #endif 

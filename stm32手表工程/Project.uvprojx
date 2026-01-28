@@ -790,6 +790,16 @@
               <FileType>5</FileType>
               <FilePath>.\Hardware\Setting_list1.h</FilePath>
             </File>
+            <File>
+              <FileName>Menu_alarm.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\Menu_alarm.c</FilePath>
+            </File>
+            <File>
+              <FileName>Menu_alarm.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Hardware\Menu_alarm.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
