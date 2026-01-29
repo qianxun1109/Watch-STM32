@@ -8,22 +8,57 @@
 #include "LED.h"
 #include "MyRTC.h"
 #include "Timer.h"
+#include "time.h"
 
 extern uint8_t Pageflag;
 extern uint8_t Previous_Pageflag;
 extern uint8_t Menu_speed;
 
 int MyAlarm_time[3]={0};//闹钟时间(时，分，秒)
-int MyAlarm_countdowntime[3]={0};//倒计时时间
+volatile int MyAlarm_countdowntime[3]={0};//倒计时时间
 int MyAlarm_countdowntime_copy[3]={0};//用于倒计时重置回设置时间
-uint8_t alarm_customizeflag = 1;
+//对于中断要修改的值，保证到内存地址读取，不被编译器优化
+volatile uint8_t alarm_set_flag = 0;//闹钟是否设置的标志位
+volatile uint8_t alarm_set_flag2 = 0;//用于控制首页闹钟标志显示与辅助闹钟开关的控制
+uint8_t alarm_customizeflag = 1;//用于控制闹钟
 uint8_t alarm_countdownflag = 1;
 uint8_t alarm_countdown_settingflag = 1;
 
+
+void MyAlarm_SetTime(void)
+{
+	time_t time_cnt;
+	struct tm time_date;
+	//日期用MyRTC_Time
+	MyRTC_Readtime();
+	time_date.tm_year=MyRTC_Time[0] - 1900;
+	time_date.tm_mon=MyRTC_Time[1] - 1;
+	time_date.tm_mday=MyRTC_Time[2];
+	//时间用MyAlarm_time
+	time_date.tm_hour=MyAlarm_time[0];
+	time_date.tm_min=MyAlarm_time[1];
+	time_date.tm_sec=MyAlarm_time[2];
+	time_date.tm_isdst = -1;
+	
+	time_cnt = mktime(&time_date) - 8*60*60;//转换成伦敦时间戳
+	
+	if(time_cnt == (time_t)-1)
+	{
+		OLED_Printf(0,0,OLED_12X24,"Fail!!!");
+		OLED_Update();
+		Delay_s(1);
+	}
+	uint32_t alarm_cnt = (uint32_t)time_cnt;//类型协调
+	uint32_t temp = RTC_GetCounter();
+	if(alarm_cnt <= temp)alarm_cnt += 60*60*24;//如果闹钟时间在此刻之前，则调到下一天
+	
+	RTC_SetAlarm(alarm_cnt);
+	RTC_WaitForLastTask();
+}
 void Alarm_Init(void)
 {
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3,ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO,ENABLE);
 	
     GPIO_InitTypeDef GPIO_InitStructure;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
@@ -32,6 +67,39 @@ void Alarm_Init(void)
     GPIO_Init(GPIOB, &GPIO_InitStructure);
 	
 	GPIO_SetBits(GPIOB,GPIO_Pin_10);
+	
+	RTC_ITConfig(RTC_IT_ALR,ENABLE);
+	RTC_WaitForLastTask();
+	RTC_ClearFlag(RTC_FLAG_ALR);
+	
+	EXTI_InitTypeDef EXTI_Initstructure;
+	EXTI_Initstructure.EXTI_Line=EXTI_Line17;
+	EXTI_Initstructure.EXTI_LineCmd=ENABLE;
+	EXTI_Initstructure.EXTI_Mode=EXTI_Mode_Interrupt;
+	EXTI_Initstructure.EXTI_Trigger=EXTI_Trigger_Rising;
+	EXTI_Init(&EXTI_Initstructure);
+	
+	NVIC_InitTypeDef NVIC_InitStructure;
+	NVIC_InitStructure.NVIC_IRQChannel=RTCAlarm_IRQn;
+	NVIC_InitStructure.NVIC_IRQChannelCmd=ENABLE;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=2;
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority=2;
+	NVIC_Init(&NVIC_InitStructure);
+}
+void RTCAlarm_IRQHandler(void)
+{
+	if(RTC_GetITStatus(RTC_IT_ALR)==SET)
+	{
+		alarm_set_flag = 1;//闹钟开始
+//		OLED_Clear();
+//		OLED_Update();
+//		Delay_s(1);
+		RTC_ClearITPendingBit(RTC_IT_ALR);
+		RTC_WaitForLastTask();
+		RTC_ClearFlag(RTC_FLAG_ALR);
+		RTC_WaitForLastTask();
+		EXTI_ClearITPendingBit(EXTI_Line17);//必须把挂起位给清掉
+	}
 }
 void Alarm_ON(void)
 {
@@ -43,7 +111,7 @@ void Alarm_OFF(void)
 }
 void Show_Menu_alarm_customize_UI(void)
 {
-	OLED_ShowImage(0,32-8,16,16,Return);
+	OLED_ShowImage(0,32-8,16,16,Cancel);
 	OLED_Printf(16,16,OLED_12X24,"%02d:%02d:%02d",MyAlarm_time[0],MyAlarm_time[1],MyAlarm_time[2]);
 	OLED_ShowImage(128-16,32-8,16,16,OK);
 }
@@ -168,10 +236,6 @@ uint8_t Setalarm_countdown(uint8_t flag)
 	}
 	return 0;
 }
-void alarm_customize_cmd(void)
-{
-	
-}
 void alarm_blink(void)
 {
 	OLED_Clear();
@@ -198,9 +262,9 @@ void alarm_countdown_reset(void)
 }
 Page Menu_alarm_customize_Page(void)
 {
-	//闹钟时间初始化
-	MyRTC_Readtime();
-	for(uint8_t i=0;i<3;i++)MyAlarm_time[i]=MyRTC_Time[i+3];
+//	//闹钟时间初始化
+//	MyRTC_Readtime();
+//	for(uint8_t i=0;i<3;i++)MyAlarm_time[i]=MyRTC_Time[i+3];
 	Previous_Pageflag = Pageflag;
 	while(1)
 	{
@@ -217,19 +281,28 @@ Page Menu_alarm_customize_Page(void)
 		}
 		else if(num == 3)
 		{		
-			if(alarm_customizeflag == 1)return MENU_ALARM;
+			if(alarm_customizeflag == 1)
+			{
+				alarm_set_flag2 = 0;//取消闹钟设置
+				alarm_set_flag = 0;
+				return MENU_ALARM;
+			}
 			else if(alarm_customizeflag >= 2 && alarm_customizeflag <= 4)Setalarm_customize(alarm_customizeflag);
 			else if(alarm_customizeflag == 5)
 			{
-				alarm_customize_cmd();
-				return MENU_ALARM;;
+				alarm_set_flag2 = 1;
+				MyAlarm_SetTime();
+//				OLED_Clear();
+//				OLED_Update();
+//				Delay_s(1);
+				return MENU_ALARM;
 			}
 		}
 		OLED_Clear();
 		Show_Menu_alarm_customize_UI();
 		switch(alarm_customizeflag)
 		{
-			case 1://返回键
+			case 1://取消键
 				OLED_ReverseArea(0,32-8,16,16);
 				break;
 			case 2://时

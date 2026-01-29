@@ -37,3 +37,4 @@
 .\objects\menu_alarm.o: Hardware\LED.h
 .\objects\menu_alarm.o: .\System\MyRTC.h
 .\objects\menu_alarm.o: Hardware\Timer.h
+.\objects\menu_alarm.o: E:\Keil5\ARM\ARMCC\Bin\..\include\time.h

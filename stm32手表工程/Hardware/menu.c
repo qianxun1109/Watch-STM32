@@ -9,7 +9,7 @@
 
 extern uint8_t Pageflag;
 extern uint8_t Previous_Pageflag;
-
+extern uint8_t alarm_set_flag2;
 /*-----------------------------------首页时钟界面---------------------------------------*/
 uint8_t clock_sign = 0;//0调节模式 1简洁模式
 uint8_t clkflag=1;
@@ -35,6 +35,7 @@ void Show_Clock_UI(void)//首页时钟UI
 		OLED_Printf(0,0,OLED_6X8,"%d-%d-%d",MyRTC_Time[0],MyRTC_Time[1],MyRTC_Time[2]);
 		OLED_ShowString(0,48,"菜单",OLED_8X16);
 		OLED_ShowString(96,48,"设置",OLED_8X16);
+		if(alarm_set_flag2 == 1)OLED_ShowImage(128-16,0,16,16,Clock);
 	}
 	OLED_Printf(16,16,OLED_12X24,"%02d:%02d:%02d",MyRTC_Time[3],MyRTC_Time[4],MyRTC_Time[5]);
 }

@@ -66,7 +66,8 @@ extern const uint8_t Dino_restart[];
 extern const uint8_t Dino_rank[];
 extern const uint8_t OK[];
 extern const uint8_t Set[];
-
+extern const uint8_t Clock[];
+extern const uint8_t Cancel[];
 
 /*按照上面的格式，在这个位置加入新的图像数据声明*/
 //...

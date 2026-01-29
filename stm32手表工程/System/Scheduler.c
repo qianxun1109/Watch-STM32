@@ -4,6 +4,8 @@
 #include "Menu_game.h"
 #include "Timer.h"
 
+extern uint8_t alarm_set_flag;
+extern uint8_t alarm_set_flag2;
 uint32_t scheduler_tick;
 uint8_t task_num;
 
@@ -57,17 +59,36 @@ void TIM1_UP_IRQHandler(void)		//<<-----使用TIM1要注意中断名不一样
 	{
 		scheduler_tick++;
 		
-		Key_Tick();
-		Clock_tick();
-		Dino_mode_tick();
+		Key_Tick();//按键检测
+		Clock_tick();//简洁模式定时
+		Dino_mode_tick();//长按检测
 		
-		static uint16_t MyAlarm_countdowntime_tick;
-		MyAlarm_countdowntime_tick++;
-		if(MyAlarm_countdowntime_sign == 1 && MyAlarm_countdowntime_tick >= 1000)
+		static uint16_t MyAlarm_countdowntime_tick = 500;
+		static uint16_t MyAlarm_customizetime_tick = 500;
+		
+		if(MyAlarm_countdowntime_sign == 1)//满足闹钟条件才执行
 		{
-			MyAlarm_countdowntime_tick = 0;
-			MyAlarm_countdowntime_ctrl(1);
+			MyAlarm_countdowntime_tick++;
+			if(MyAlarm_countdowntime_tick >= 500)//500ms执行一次
+			{
+				MyAlarm_countdowntime_tick = 0;
+				MyAlarm_ctrl_countdown(1);//里面执行完后会取消掉闹钟条件
+			}
 		}
+		else MyAlarm_countdowntime_tick = 500;
+		
+		if(alarm_set_flag2 == 0)alarm_set_flag = 0;//取消闹钟逻辑，将alarm_set_flag2置0，闹钟不在首页显示，与闹钟失效的功能可以重叠，如果alarm_set_flag在闹钟中断里置1，则可通过alarm_set_flag2忽视，同时闹钟的硬件标志位在闹钟中断里已经处理好了
+		if(alarm_set_flag == 1)//满足闹钟条件才执行
+		{
+			MyAlarm_customizetime_tick++;
+			if(MyAlarm_customizetime_tick >= 500)//500ms执行一次
+			{
+				MyAlarm_customizetime_tick = 0;
+				MyAlarm_ctrl_customize(1);//里面执行完后会取消掉闹钟条件
+			}
+		}
+		else MyAlarm_customizetime_tick = 500;
+		
 		TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
 	}
 }

@@ -17,7 +17,7 @@ extern uint8_t menuflag;
 extern uint8_t menuflag_max;
 extern const uint8_t* const icon_pointers[];
 /*--------------------------秒表界面--------------------------------*/
-int MyTimer_time[3]={0,0,0};//秒表时间(时，分，秒)
+volatile int MyTimer_time[3]={0,0,0};//秒表时间(时，分，秒)
 uint8_t timerflag = 1;
 
 void Show_Menu_timer_UI(void)

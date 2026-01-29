@@ -3,11 +3,13 @@
 #include "Menu_alarm.h"
 
 extern void Alarm_ON(void);
-extern int MyTimer_time[3];
-extern int MyAlarm_countdowntime[3];
+extern volatile int MyTimer_time[3];
+extern volatile int MyAlarm_countdowntime[3];
 extern Page Pageflag;
+extern volatile uint8_t alarm_set_flag;//闹钟是否设置的标志位
+extern volatile uint8_t alarm_set_flag2;
 
-uint8_t MyAlarm_countdowntime_sign = 0;//闹钟响的标志
+volatile uint8_t MyAlarm_countdowntime_sign = 0;//闹钟响的标志
 
 void Timer_Init(void)
 {
@@ -51,7 +53,7 @@ void MyTimer_time_up(void)
 		MyTimer_time[1] = 0;
 	}
 }
-void MyAlarm_countdowntime_ctrl(uint8_t flag)//倒计时闹钟相应逻辑//注：要放在scheduler的定时器里，TIM2在结束后会被关闭
+void MyAlarm_ctrl_countdown(uint8_t flag)//闹钟响应逻辑//注：要放在scheduler的定时器里，TIM2在结束后会被关闭
 {
 	static uint8_t tick = 0;
 	if(flag == 1)
@@ -66,6 +68,31 @@ void MyAlarm_countdowntime_ctrl(uint8_t flag)//倒计时闹钟相应逻辑//注�
 		{	
 			tick = 0;
 			MyAlarm_countdowntime_sign = 0;//利用这个标志位切换执行状态可以避免static的弊端
+		}       
+	}
+	else if(flag == 0)
+	{
+		tick = 0;
+		Alarm_OFF();
+	}
+}
+
+void MyAlarm_ctrl_customize(uint8_t flag)//闹钟响应逻辑//注：要放在scheduler的定时器里，TIM2在结束后会被关闭
+{
+	static uint8_t tick = 0;
+	if(flag == 1)
+	{
+		if(tick < 6)
+		{
+			if(tick%2==0)Alarm_ON();
+			else if(tick%2==1)Alarm_OFF();
+			tick++;
+		}
+		else
+		{	
+			tick = 0;
+			alarm_set_flag = 0;//闹钟结束
+			alarm_set_flag2 = 0;//首页闹钟标志结束显示(放在闹钟响应完后再处理，避免和scheduler里的取消闹钟逻辑冲突)
 		}       
 	}
 	else if(flag == 0)
