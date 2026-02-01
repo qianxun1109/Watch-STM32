@@ -6,10 +6,16 @@
 #include "Setting_time.h"
 #include "menu.h"
 #include "OLED_Data.h"
+#include "AD.h"
 
 extern uint8_t Pageflag;
 extern uint8_t Previous_Pageflag;
 extern uint8_t alarm_set_flag2;
+
+uint16_t ADValue;		
+float Voltage;
+float Voltage_max = 3.3;//电量满
+float Voltage_min = 0;//电量为0
 /*-----------------------------------首页时钟界面---------------------------------------*/
 uint8_t clock_sign = 0;//0调节模式 1简洁模式
 uint8_t clkflag=1;
@@ -28,6 +34,7 @@ void Clock_tick(void)//用于定时切换简洁模式
 
 void Show_Clock_UI(void)//首页时钟UI
 {
+	float sum = 0.0f;
 	MyRTC_Readtime();//将此刻RTCcounter里的时间戳传递到MyRTC_Time数组里
 	//图像绘制
 	if(clock_sign == 0)//调节模式
@@ -35,7 +42,27 @@ void Show_Clock_UI(void)//首页时钟UI
 		OLED_Printf(0,0,OLED_6X8,"%d-%d-%d",MyRTC_Time[0],MyRTC_Time[1],MyRTC_Time[2]);
 		OLED_ShowString(0,48,"菜单",OLED_8X16);
 		OLED_ShowString(96,48,"设置",OLED_8X16);
-		if(alarm_set_flag2 == 1)OLED_ShowImage(128-16,0,16,16,Clock);
+		//电量显示控制
+		for(uint8_t i = 0;i<10;i++)
+		{
+			ADValue = AD_GetValue();
+			Voltage = (float)ADValue * Voltage_max / 4095;
+			sum += Voltage;
+		}
+		Voltage = sum / 10;
+		OLED_ShowImage(128-16,0,16,10,Battery);
+		if(Voltage <= Voltage_min + (Voltage_max - Voltage_min) * 0.9)OLED_ClearArea(123,2,1,6);
+		if(Voltage <= Voltage_min + (Voltage_max - Voltage_min) * 0.8)OLED_ClearArea(122,2,1,6);
+		if(Voltage <= Voltage_min + (Voltage_max - Voltage_min) * 0.7)OLED_ClearArea(121,2,1,6);
+		if(Voltage <= Voltage_min + (Voltage_max - Voltage_min) * 0.6)OLED_ClearArea(120,2,1,6);
+		if(Voltage <= Voltage_min + (Voltage_max - Voltage_min) * 0.5)OLED_ClearArea(119,2,1,6);
+		if(Voltage <= Voltage_min + (Voltage_max - Voltage_min) * 0.4)OLED_ClearArea(118,2,1,6);
+		if(Voltage <= Voltage_min + (Voltage_max - Voltage_min) * 0.3)OLED_ClearArea(117,2,1,6);
+		if(Voltage <= Voltage_min + (Voltage_max - Voltage_min) * 0.2)OLED_ClearArea(116,2,1,6);
+		if(Voltage <= Voltage_min + (Voltage_max - Voltage_min) * 0.1)OLED_ClearArea(115,2,1,6);
+		if(Voltage <= Voltage_min + (Voltage_max - Voltage_min) * 0.02)OLED_ClearArea(114,2,1,6);
+
+		if(alarm_set_flag2 == 1)OLED_ShowImage(60,0,16,16,Clock);//闹钟开启标志
 	}
 	OLED_Printf(16,16,OLED_12X24,"%02d:%02d:%02d",MyRTC_Time[3],MyRTC_Time[4],MyRTC_Time[5]);
 }

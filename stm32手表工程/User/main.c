@@ -14,6 +14,7 @@
 #include "Delay.h"
 #include "Setting_list1.h"
 #include "Menu_alarm.h"
+#include "AD.h"
 
 Page Pageflag = CLOCK;
 Page Previous_Pageflag;
@@ -27,6 +28,7 @@ int main(void)
 	Timer_Init();
 	Scheduler_Init();
 	Alarm_Init();
+	AD_Init();
 	//MPU6050_Init();
 	
 	srand(66666666);
@@ -82,7 +84,6 @@ int main(void)
 			
 			default:
 				break;
-
 		}
 	}
 }
@@ -92,9 +93,8 @@ int main(void)
 //OLED_Update();
 //Delay_s(1);
 
-////Dino测试
-//uint8_t Pageflag = MENU_GAME_DINO_BEGIN;
-//uint8_t Previous_Pageflag;
+//Page Pageflag = CLOCK;
+//Page Previous_Pageflag;
 
 //int main(void)
 //{
@@ -104,50 +104,13 @@ int main(void)
 //	LED_Init();
 //	Timer_Init();
 //	Scheduler_Init();
+//	Alarm_Init();
+//	AD_Init();
 //	//MPU6050_Init();
 //	
-//	//srand((unsigned int)RTC_GetCounter());
-//	srand(66666666);
+
 //	while (1)
 //	{
-//		switch(Pageflag)
-//		{
-//			case CLOCK:
-//				Pageflag = CLK_Page();
-//				break;
-//			case SETTING:
-//				Pageflag = Setting_Page();
-//				break;
-//			case MENU:
-//				Pageflag = Menu_Page();
-//				break;
-//			case SETTING_TIME:
-//				Pageflag = Setting_time_Page();
-//				break;
-//			case MENU_TIMER:
-//				Pageflag = Menu_timer_Page();
-//				break;
-//			case MENU_ALARM:
-//				//Pageflag = Menu_alarm_Page();
-//				break;
-//			case MENU_LIGHT:
-//				Pageflag = Menu_light_Page();
-//				break;
-//			case MENU_GAME:
-//				Pageflag = Menu_game_Page();
-//				break;
-//			case MENU_GAME_DINO_END:
-//				Pageflag = Dino_end_Page();
-//				break;
-//			case MENU_GAME_DINO_BEGIN:
-//				Pageflag = Dino_begin_Page();
-//				break;
-//			
-//			default:
-//				break;
-
-//		}
+//		OLED_Printf(0,0,OLED_8X16,"%02d",AD_GetValue());
 //	}
 //}
-
-

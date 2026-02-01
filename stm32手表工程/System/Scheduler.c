@@ -62,6 +62,7 @@ void TIM1_UP_IRQHandler(void)		//<<-----使用TIM1要注意中断名不一样
 		Key_Tick();//按键检测
 		Clock_tick();//简洁模式定时
 		Dino_mode_tick();//长按检测
+		//Key_Shutdown_Tick();//关机长按检测
 		
 		static uint16_t MyAlarm_countdowntime_tick = 500;
 		static uint16_t MyAlarm_customizetime_tick = 500;

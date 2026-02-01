@@ -91,9 +91,6 @@ void RTCAlarm_IRQHandler(void)
 	if(RTC_GetITStatus(RTC_IT_ALR)==SET)
 	{
 		alarm_set_flag = 1;//闹钟开始
-//		OLED_Clear();
-//		OLED_Update();
-//		Delay_s(1);
 		RTC_ClearITPendingBit(RTC_IT_ALR);
 		RTC_WaitForLastTask();
 		RTC_ClearFlag(RTC_FLAG_ALR);

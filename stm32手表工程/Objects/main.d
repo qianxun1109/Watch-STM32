@@ -44,3 +44,4 @@
 .\objects\main.o: .\System\Delay.h
 .\objects\main.o: .\Hardware\Setting_list1.h
 .\objects\main.o: .\Hardware\Menu_alarm.h
+.\objects\main.o: .\Hardware\AD.h
