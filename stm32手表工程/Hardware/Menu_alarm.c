@@ -9,6 +9,7 @@
 #include "MyRTC.h"
 #include "Timer.h"
 #include "time.h"
+#include "PWM.h"
 
 extern uint8_t Pageflag;
 extern uint8_t Previous_Pageflag;
@@ -23,7 +24,6 @@ volatile uint8_t alarm_set_flag2 = 0;//用于控制首页闹钟标志显示与�
 uint8_t alarm_customizeflag = 1;//用于控制闹钟
 uint8_t alarm_countdownflag = 1;
 uint8_t alarm_countdown_settingflag = 1;
-
 
 void MyAlarm_SetTime(void)
 {
@@ -57,16 +57,15 @@ void MyAlarm_SetTime(void)
 }
 void Alarm_Init(void)
 {
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO,ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
 	
-    GPIO_InitTypeDef GPIO_InitStructure;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_Init(GPIOB, &GPIO_InitStructure);
-	
-	GPIO_SetBits(GPIOB,GPIO_Pin_10);
+	GPIO_InitTypeDef GPIO_InitStructure;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;//如果用pwm，这里要改
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7;		
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_Init(GPIOA, &GPIO_InitStructure);	
+	GPIO_ResetBits(GPIOA,GPIO_Pin_7);
 	
 	RTC_ITConfig(RTC_IT_ALR,ENABLE);
 	RTC_WaitForLastTask();
@@ -100,11 +99,13 @@ void RTCAlarm_IRQHandler(void)
 }
 void Alarm_ON(void)
 {
-	GPIO_ResetBits(GPIOB,GPIO_Pin_10);
+	//PWM_SetCompare2(50);
+	GPIO_SetBits(GPIOA,GPIO_Pin_7);
 }
 void Alarm_OFF(void)
 {
-	GPIO_SetBits(GPIOB,GPIO_Pin_10);
+	//PWM_SetCompare2(0);
+	GPIO_ResetBits(GPIOA,GPIO_Pin_7);
 }
 void Show_Menu_alarm_customize_UI(void)
 {
@@ -259,9 +260,8 @@ void alarm_countdown_reset(void)
 }
 Page Menu_alarm_customize_Page(void)
 {
-//	//闹钟时间初始化
-//	MyRTC_Readtime();
-//	for(uint8_t i=0;i<3;i++)MyAlarm_time[i]=MyRTC_Time[i+3];
+	//闹钟时间初始化
+	Alarm_Readtime();
 	Previous_Pageflag = Pageflag;
 	while(1)
 	{
@@ -282,6 +282,7 @@ Page Menu_alarm_customize_Page(void)
 			{
 				alarm_set_flag2 = 0;//取消闹钟设置
 				alarm_set_flag = 0;
+				BKP_WriteBackupRegister(BKP_DR2,alarm_set_flag2);//掉电不丢失
 				return MENU_ALARM;
 			}
 			else if(alarm_customizeflag >= 2 && alarm_customizeflag <= 4)Setalarm_customize(alarm_customizeflag);
@@ -289,9 +290,7 @@ Page Menu_alarm_customize_Page(void)
 			{
 				alarm_set_flag2 = 1;
 				MyAlarm_SetTime();
-//				OLED_Clear();
-//				OLED_Update();
-//				Delay_s(1);
+				BKP_WriteBackupRegister(BKP_DR2,alarm_set_flag2);//掉电不丢失，要和alarm_set_flag2同步更改
 				return MENU_ALARM;
 			}
 		}

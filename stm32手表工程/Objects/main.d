@@ -31,7 +31,6 @@
 .\objects\main.o: .\Hardware\OLED.h
 .\objects\main.o: .\Hardware\OLED_Data.h
 .\objects\main.o: .\System\MyRTC.h
-.\objects\main.o: .\Hardware\MPU6050.h
 .\objects\main.o: .\Hardware\menu.h
 .\objects\main.o: .\Hardware\Key.h
 .\objects\main.o: .\System\Scheduler.h
@@ -45,3 +44,4 @@
 .\objects\main.o: .\Hardware\Setting_list1.h
 .\objects\main.o: .\Hardware\Menu_alarm.h
 .\objects\main.o: .\Hardware\AD.h
+.\objects\main.o: .\Hardware\PWM.h

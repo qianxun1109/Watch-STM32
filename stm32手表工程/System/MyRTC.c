@@ -4,6 +4,7 @@
 
 //修改时间戳：先改MyRTC_Time数组数据，再调用MyRTC_SetTime函数
 
+extern int MyAlarm_time[3];
 int MyRTC_Time[6]={2026,1,28,18,27,0};
 
 void MyRTC_Init(void)//注意：vbat不掉电的情况下mcu复位不能重复执行初始化
@@ -76,3 +77,25 @@ void MyRTC_Readtime(void)
 	MyRTC_Time[4]=time_date.tm_min;
 	MyRTC_Time[5]=time_date.tm_sec;
 }
+//读取alarm的值
+uint32_t Alarm_GetCounter(void)
+{
+	uint16_t tmp = 0;
+	tmp = RTC->ALRL;
+	return (((uint32_t)RTC->ALRH << 16 ) | tmp) ;
+}
+//获取闹钟时间
+void Alarm_Readtime(void)
+{
+	time_t time_cnt;
+	time_cnt = Alarm_GetCounter() + 8*60*60;//时区偏移，实现时间戳与北京时间的对应
+	  
+	struct tm time_date;
+	//由于单片机没有系统时间，也无法区分时区，默认伦敦时间，要手动进行时区偏移
+	time_date = *localtime(&time_cnt);//localtime函数根据当前时间戳返回一个tm类型的结构体指针
+	
+	MyAlarm_time[0]=time_date.tm_hour;
+	MyAlarm_time[1]=time_date.tm_min;
+	MyAlarm_time[2]=time_date.tm_sec;
+}
+

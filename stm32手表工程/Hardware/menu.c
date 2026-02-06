@@ -12,10 +12,11 @@ extern uint8_t Pageflag;
 extern uint8_t Previous_Pageflag;
 extern uint8_t alarm_set_flag2;
 
+//这里对锂电池2/3分压后采集，根据3.3v为ADC的正极参考电压计算
 uint16_t ADValue;		
 float Voltage;
-float Voltage_max = 3.3;//电量满
-float Voltage_min = 0;//电量为0
+float Voltage_max = 4.2 * 2/3;//锂电池的满电电压为4.2v
+float Voltage_min = 3.3 * 2/3;//锂电池电压为3.3v时认为电量为0
 /*-----------------------------------首页时钟界面---------------------------------------*/
 uint8_t clock_sign = 0;//0调节模式 1简洁模式
 uint8_t clkflag=1;

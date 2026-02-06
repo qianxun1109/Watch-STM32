@@ -93,6 +93,7 @@ void MyAlarm_ctrl_customize(uint8_t flag)//闹钟响应逻辑//注：要放在sc
 			tick = 0;
 			alarm_set_flag = 0;//闹钟结束
 			alarm_set_flag2 = 0;//首页闹钟标志结束显示(放在闹钟响应完后再处理，避免和scheduler里的取消闹钟逻辑冲突)
+			BKP_WriteBackupRegister(BKP_DR2,alarm_set_flag2);
 		}       
 	}
 	else if(flag == 0)

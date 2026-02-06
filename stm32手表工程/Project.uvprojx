@@ -696,21 +696,6 @@
               <FilePath>.\Hardware\OLED_Data.h</FilePath>
             </File>
             <File>
-              <FileName>MPU6050.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Hardware\MPU6050.c</FilePath>
-            </File>
-            <File>
-              <FileName>MPU6050.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Hardware\MPU6050.h</FilePath>
-            </File>
-            <File>
-              <FileName>MPU6050_Reg.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Hardware\MPU6050_Reg.h</FilePath>
-            </File>
-            <File>
               <FileName>menu.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Hardware\menu.h</FilePath>
@@ -809,6 +794,16 @@
               <FileName>AD.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Hardware\AD.h</FilePath>
+            </File>
+            <File>
+              <FileName>PWM.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\PWM.c</FilePath>
+            </File>
+            <File>
+              <FileName>PWM.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Hardware\PWM.h</FilePath>
             </File>
           </Files>
         </Group>

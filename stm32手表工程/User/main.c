@@ -1,7 +1,6 @@
 #include "stm32f10x.h"                  // Device header
 #include "OLED.h"
 #include "MyRTC.h"
-#include "MPU6050.h"
 #include "menu.h"
 #include "Key.h"
 #include "Scheduler.h"
@@ -15,6 +14,7 @@
 #include "Setting_list1.h"
 #include "Menu_alarm.h"
 #include "AD.h"
+#include "PWM.h"
 
 Page Pageflag = CLOCK;
 Page Previous_Pageflag;
@@ -29,8 +29,9 @@ int main(void)
 	Scheduler_Init();
 	Alarm_Init();
 	AD_Init();
-	//MPU6050_Init();
+	//PWM_Init();
 	
+	alarm_set_flag2 = BKP_ReadBackupRegister(BKP_DR2);//上电重建闹钟标志
 	srand(66666666);
 	while (1)
 	{
