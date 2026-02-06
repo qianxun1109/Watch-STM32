@@ -6,6 +6,7 @@ void MyRTC_Readtime(void);
 void Alarm_Readtime(void);
 
 extern int MyRTC_Time[];
+extern int weekday;
 
 
 

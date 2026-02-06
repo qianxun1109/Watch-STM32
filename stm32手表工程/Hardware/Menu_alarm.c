@@ -13,7 +13,6 @@
 
 extern uint8_t Pageflag;
 extern uint8_t Previous_Pageflag;
-extern uint8_t Menu_speed;
 
 int MyAlarm_time[3]={0};//闹钟时间(时，分，秒)
 volatile int MyAlarm_countdowntime[3]={0};//倒计时时间

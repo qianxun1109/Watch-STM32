@@ -32,6 +32,7 @@ int main(void)
 	//PWM_Init();
 	
 	alarm_set_flag2 = BKP_ReadBackupRegister(BKP_DR2);//上电重建闹钟标志
+	Menu_speed = BKP_ReadBackupRegister(BKP_DR3);
 	srand(66666666);
 	while (1)
 	{

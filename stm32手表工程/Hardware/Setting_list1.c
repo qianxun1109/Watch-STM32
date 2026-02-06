@@ -37,7 +37,11 @@ uint8_t SetMovespeed(void)
 			Menu_speed++;
 			if(Menu_speed > 3)Menu_speed = 1;
 		}
-		else if(num == 3)return 1;
+		else if(num == 3)
+		{
+			BKP_WriteBackupRegister(BKP_DR3,Menu_speed);//掉电不丢失
+			return 1;
+		}
 	}
 }
 Page Setting_movespeed_Page(void)

@@ -32,7 +32,35 @@ void Clock_tick(void)//用于定时切换简洁模式
 		clock_sign = 1;
 	}
 }
-
+void Show_weekday(void)
+{
+	switch(weekday)
+	{
+		case 0:
+			OLED_Printf(64,0,OLED_6X8,"Sun");
+			break;
+		case 1:
+			OLED_Printf(64,0,OLED_6X8,"Mon");
+			break;
+		case 2:
+			OLED_Printf(64,0,OLED_6X8,"Tue");
+			break;
+		case 3:
+			OLED_Printf(64,0,OLED_6X8,"Wed");
+			break;
+		case 4:
+			OLED_Printf(64,0,OLED_6X8,"Thu");
+			break;
+		case 5:
+			OLED_Printf(64,0,OLED_6X8,"Fri");
+			break;
+		case 6:
+			OLED_Printf(64,0,OLED_6X8,"Sat");
+			break;
+		default :
+			break;
+	}
+}
 void Show_Clock_UI(void)//首页时钟UI
 {
 	float sum = 0.0f;
@@ -43,11 +71,12 @@ void Show_Clock_UI(void)//首页时钟UI
 		OLED_Printf(0,0,OLED_6X8,"%d-%d-%d",MyRTC_Time[0],MyRTC_Time[1],MyRTC_Time[2]);
 		OLED_ShowString(0,48,"菜单",OLED_8X16);
 		OLED_ShowString(96,48,"设置",OLED_8X16);
+		Show_weekday();
 		//电量显示控制
 		for(uint8_t i = 0;i<10;i++)
 		{
 			ADValue = AD_GetValue();
-			Voltage = (float)ADValue * Voltage_max / 4095;
+			Voltage = (float)ADValue * 3.3 / 4095;
 			sum += Voltage;
 		}
 		Voltage = sum / 10;
@@ -62,8 +91,9 @@ void Show_Clock_UI(void)//首页时钟UI
 		if(Voltage <= Voltage_min + (Voltage_max - Voltage_min) * 0.2)OLED_ClearArea(116,2,1,6);
 		if(Voltage <= Voltage_min + (Voltage_max - Voltage_min) * 0.1)OLED_ClearArea(115,2,1,6);
 		if(Voltage <= Voltage_min + (Voltage_max - Voltage_min) * 0.02)OLED_ClearArea(114,2,1,6);
-
-		if(alarm_set_flag2 == 1)OLED_ShowImage(60,0,16,16,Clock);//闹钟开启标志
+		
+		//闹钟开启标志
+		if(alarm_set_flag2 == 1)OLED_ShowImage(128-16*2,0,16,16,Clock);
 	}
 	OLED_Printf(16,16,OLED_12X24,"%02d:%02d:%02d",MyRTC_Time[3],MyRTC_Time[4],MyRTC_Time[5]);
 }

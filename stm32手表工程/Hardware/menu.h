@@ -20,6 +20,7 @@ typedef enum PAGE{
 }Page;
 
 extern uint8_t clkflag;
+extern uint8_t Menu_speed;//滑动速度
 //CLOCK时钟界面相关函数
 void Show_Clock_UI(void);
 Page CLK_Page(void);

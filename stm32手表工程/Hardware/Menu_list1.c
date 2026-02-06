@@ -11,7 +11,6 @@
 
 extern uint8_t Pageflag;
 extern uint8_t Previous_Pageflag;
-extern uint8_t Menu_speed;
 
 extern uint8_t menuflag;
 extern uint8_t menuflag_max;

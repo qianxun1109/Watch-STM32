@@ -5,7 +5,8 @@
 //修改时间戳：先改MyRTC_Time数组数据，再调用MyRTC_SetTime函数
 
 extern int MyAlarm_time[3];
-int MyRTC_Time[6]={2026,1,28,18,27,0};
+int MyRTC_Time[6]={2026,2,6,18,27,0};
+int weekday = 0;
 
 void MyRTC_Init(void)//注意：vbat不掉电的情况下mcu复位不能重复执行初始化
 {
@@ -76,6 +77,7 @@ void MyRTC_Readtime(void)
 	MyRTC_Time[3]=time_date.tm_hour;
 	MyRTC_Time[4]=time_date.tm_min;
 	MyRTC_Time[5]=time_date.tm_sec;
+	weekday = time_date.tm_wday;
 }
 //读取alarm的值
 uint32_t Alarm_GetCounter(void)
