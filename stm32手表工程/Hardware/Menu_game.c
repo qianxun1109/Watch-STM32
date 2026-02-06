@@ -55,7 +55,7 @@ uint8_t Dino_jumping_UI_sign = 0;//sign=1为上升过程，0为下降过程
 uint8_t Dino_runing_UI_count = 0;
 uint8_t Dino_runing_UI_sign = 0;
 
-
+/*重置过程量和障碍物检测位置*/
 void Dino_Reset(void)
 {
 //	Dino_bird_UI_count = 0;
@@ -88,7 +88,7 @@ void Dino_Reset(void)
 	borders[6].A=128;
 //	borders[7]=         
 }
-
+/*寻找得分记录为空的位置*/
 int Dino_find_available_position(void)
 {
 	uint8_t i;
@@ -98,6 +98,7 @@ int Dino_find_available_position(void)
 	}
 	return -1;
 }
+/*得分排序（降序）（选择排序）*/
 void Dino_score_sort(void)
 {
 	uint8_t i,j,min;
@@ -113,16 +114,18 @@ void Dino_score_sort(void)
 		Dino_historicalscores[15-i] = temp;
 	}
 }
+/*给合适的位置添加得分记录*/
 void Dino_score_add(uint32_t score)
 {
-	Dino_score_sort();
-	int position = Dino_find_available_position();
-	if(position != -1)Dino_historicalscores[position]=score;
-	else if(position == -1 && Dino_historicalscores[15] < score)Dino_historicalscores[15] = score;
+	Dino_score_sort();//对原数组排序
+	int position = Dino_find_available_position();//寻找是否存在空位置
+	if(position != -1)Dino_historicalscores[position]=score;//若存在，在末尾添加得分
+	else if(position == -1 && Dino_historicalscores[15] < score)Dino_historicalscores[15] = score;//若不存在，且该得分高于之前的最小得分，则先覆盖原最小得分
 }
+/*得分展示*/
 void Dino_scoreslist_UI(void)
 {
-	Dino_score_sort();//先保证排序没问题
+	Dino_score_sort();//先排序
 	uint8_t i;
 	for(i=0;i<8;i++)OLED_Printf(0,8*i,OLED_6X8,"%02d",i+1);
 	for(i=0;i<8;i++)OLED_Printf(64+6,8*i,OLED_6X8,"%02d",i+9);
@@ -133,6 +136,7 @@ void Dino_scoreslist_UI(void)
 	for(i=0;i<8;i++)OLED_Printf(128-38,8*i,OLED_6X8,"%06d",Dino_historicalscores[i+8]);
 	
 }
+/*得分展示页逻辑*/
 Page Dino_scoreslist_Page(void)
 {
 	Previous_Pageflag = Pageflag;
@@ -145,12 +149,14 @@ Page Dino_scoreslist_Page(void)
 		OLED_Update();
 	}
 }
+/*开始页界面*/
 void Dino_start_UI(void)
 {
 	OLED_ShowImage(0,0,128,64,Chrome_Dino_run_start);
 	OLED_ShowImage(52,24,16,16,Return);
 	OLED_ShowImage(52,24+16,16,16,Begin);
 }
+/*结束页界面*/
 void Dino_end_UI(void)
 {
 	OLED_Printf(64-2-4*8,32-16-2,OLED_8X16,"GAME");
@@ -169,6 +175,7 @@ void Dino_end_UI(void)
 		OLED_ReverseArea(0,borders[0].B,19,21);
 	}
 }
+/*奔跑画面*/
 void Dino_runing_UI(void)
 {
 //	static uint8_t count = 0;
@@ -177,7 +184,7 @@ void Dino_runing_UI(void)
 	{
 		Dino_runing_UI_count++;
 		OLED_ShowImage(0,43,19,21,Dinosaur1);
-		if(Dino_runing_UI_count >= 3)
+		if(Dino_runing_UI_count >= 1)
 		{
 			Dino_runing_UI_sign = 0;
 			Dino_runing_UI_count = 0;
@@ -187,51 +194,51 @@ void Dino_runing_UI(void)
 	{
 		Dino_runing_UI_count++;
 		OLED_ShowImage(0,43,19,21,Dinosaur2);
-		if(Dino_runing_UI_count >= 3)
+		if(Dino_runing_UI_count >= 1)
 		{
 			Dino_runing_UI_sign = 1;
 			Dino_runing_UI_count = 0;
 		}
 	}
 }
-
+/*跳跃画面*/
 uint8_t Dino_jumping_UI(uint8_t flag,uint8_t speed)//1小跳 2大跳
 {
 //	static int location = 0;
 //	static uint8_t sign = 0;//sign=1为上升过程，0为下降过程
-	//速度对跳跃过程的控制-------------------------------------
+	/*速度对跳跃过程的控制*/
 	if(Dino_jumping_UI_sign == 0)
 	{
-		Dino_jumping_UI_location++;
+		Dino_jumping_UI_location+=2;
 		if(flag == 2 && Dino_jumping_UI_location <= 20)Dino_jumping_UI_location++;//跳跃速度变化
-		if(speed >= 3 && flag == 2 && Dino_jumping_UI_location <= 30)Dino_jumping_UI_location++;
-		if(speed >= 3 && flag == 1 && Dino_jumping_UI_location <= 16)Dino_jumping_UI_location++;
-		if(speed >= 4 && flag == 2 && Dino_jumping_UI_location <= 35)Dino_jumping_UI_location++;
-		if(speed >= 4 && flag == 1 && Dino_jumping_UI_location <= 22)Dino_jumping_UI_location++;
-		if(speed >= 5 && flag == 2 && Dino_jumping_UI_location <= 38)Dino_jumping_UI_location++;
-		if(speed >= 5 && flag == 1 && Dino_jumping_UI_location <= 26)Dino_jumping_UI_location++;
+		if(speed >= 3 && flag == 2 && Dino_jumping_UI_location <= 30)Dino_jumping_UI_location+=2;
+		if(speed >= 3 && flag == 1 && Dino_jumping_UI_location <= 16)Dino_jumping_UI_location+=2;
+		if(speed >= 4 && flag == 2 && Dino_jumping_UI_location <= 35)Dino_jumping_UI_location+=2;
+		if(speed >= 4 && flag == 1 && Dino_jumping_UI_location <= 22)Dino_jumping_UI_location+=2;
+		if(speed >= 5 && flag == 2 && Dino_jumping_UI_location <= 38)Dino_jumping_UI_location+=2;
+		if(speed >= 5 && flag == 1 && Dino_jumping_UI_location <= 26)Dino_jumping_UI_location+=2;
 		
 		borders[0].B = 43 - Dino_jumping_UI_location;//矩形定位
 		OLED_ShowImage(0,43 - Dino_jumping_UI_location,19,21,Dinosaur_up);
 	}
 	else if(Dino_jumping_UI_sign == 1)
 	{
-		Dino_jumping_UI_location--;
-		if(flag == 2 && Dino_jumping_UI_location <= 20 && Dino_jumping_UI_location >= 1)Dino_jumping_UI_location--;
-		if(speed >= 3 && flag == 2 && Dino_jumping_UI_location >= 1 && Dino_jumping_UI_location <= 30)Dino_jumping_UI_location--;
-		if(speed >= 3 && flag == 1 && Dino_jumping_UI_location >= 1 && Dino_jumping_UI_location <= 16)Dino_jumping_UI_location--;
-		if(speed >= 4 && flag == 2 && Dino_jumping_UI_location >= 1 && Dino_jumping_UI_location <= 35)Dino_jumping_UI_location--;
-		if(speed >= 4 && flag == 1 && Dino_jumping_UI_location >= 1 && Dino_jumping_UI_location <= 22)Dino_jumping_UI_location--;
-		if(speed >= 5 && flag == 2 && Dino_jumping_UI_location >= 1 && Dino_jumping_UI_location <= 38)Dino_jumping_UI_location--;
-		if(speed >= 5 && flag == 1 && Dino_jumping_UI_location >= 1 && Dino_jumping_UI_location <= 26)Dino_jumping_UI_location--;
+		Dino_jumping_UI_location-=2;
+		if(flag == 2 && Dino_jumping_UI_location <= 20 && Dino_jumping_UI_location >= 1)Dino_jumping_UI_location-=2;
+		if(speed >= 3 && flag == 2 && Dino_jumping_UI_location >= 2 && Dino_jumping_UI_location <= 30)Dino_jumping_UI_location-=2;
+		if(speed >= 3 && flag == 1 && Dino_jumping_UI_location >= 2 && Dino_jumping_UI_location <= 16)Dino_jumping_UI_location-=2;
+		if(speed >= 4 && flag == 2 && Dino_jumping_UI_location >= 2 && Dino_jumping_UI_location <= 35)Dino_jumping_UI_location-=2;
+		if(speed >= 4 && flag == 1 && Dino_jumping_UI_location >= 2 && Dino_jumping_UI_location <= 22)Dino_jumping_UI_location-=2;
+		if(speed >= 5 && flag == 2 && Dino_jumping_UI_location >= 2 && Dino_jumping_UI_location <= 38)Dino_jumping_UI_location-=2;
+		if(speed >= 5 && flag == 1 && Dino_jumping_UI_location >= 2 && Dino_jumping_UI_location <= 26)Dino_jumping_UI_location-=2;
 		
 		borders[0].B = 43 - Dino_jumping_UI_location;
 		OLED_ShowImage(0,43 - Dino_jumping_UI_location,19,21,Dinosaur_up);
 	}
-	//跳跃限度-----------------------------------------------
+	/*跳跃限度*/
 	if(flag == 1)
 	{
-		if(Dino_jumping_UI_location >= 30)Dino_jumping_UI_sign = 1;//小跳为30像素
+		if(Dino_jumping_UI_location >= 34)Dino_jumping_UI_sign = 1;//小跳为34像素
 	}
 	else if(flag == 2)
 	{
@@ -244,7 +251,7 @@ uint8_t Dino_jumping_UI(uint8_t flag,uint8_t speed)//1小跳 2大跳
 	}
 	return 1;//跳跃未结束
 }
-
+/*地面*/
 void Dino_ground_UI(void)//以3张图为一组，移动128*2次为一轮，更新随机值
 {
 //	static uint16_t tick = 128*2;
@@ -271,7 +278,8 @@ void Dino_ground_UI(void)//以3张图为一组，移动128*2次为一轮，更�
 	Dino_ground_UI_tick++;
 	if(Dino_ground_UI_location >= 128*2)Dino_ground_UI_location = 0;
 }
-void Dino_cloud_UI(void)//放4页的中间两页，和仙人掌错开
+/*云*/
+void Dino_cloud_UI(void)//放4页一组的中间两页，和仙人掌错开
 {
 	static uint16_t tick = 128*3;
 	static uint8_t i,j,k;
@@ -292,6 +300,7 @@ void Dino_cloud_UI(void)//放4页的中间两页，和仙人掌错开
 	tick++;
 	if(location >= 128*3)location = 0;
 }
+/*仙人掌*/
 void Dino_cacti_UI(uint8_t Dino_speed)
 {
 //	static uint16_t tick = 128*2;
@@ -339,11 +348,12 @@ void Dino_cacti_UI(uint8_t Dino_speed)
 	Dino_cacti_UI_location++;
 	if(Dino_cacti_UI_location >= 128*2)Dino_cacti_UI_location = 0;//重置
 }
-
+/*得分显示*/
 void Dino_score_UI(uint32_t Dino_score)
 {
 	OLED_Printf(128-6*6,0,OLED_6X8,"%06d",Dino_score);
 }
+/*场景显示合并*/
 void Dino_scene_UI(uint8_t Dino_speed)
 {
 	Dino_ground_UI();
@@ -351,7 +361,7 @@ void Dino_scene_UI(uint8_t Dino_speed)
 	Dino_cacti_UI(Dino_speed);
 	//if(Dino_speed >= 4)Dino_bird_UI(Dino_speed);
 }
-
+/*碰撞判断*/
 uint8_t Dino_collision_judge(Dino_border* p)
 {
 	uint8_t i = 0;
@@ -362,7 +372,8 @@ uint8_t Dino_collision_judge(Dino_border* p)
 	}
 	return 0;//未碰撞
 }
-uint32_t Dino_Run(void)//注：返回值最高位是一个标志为，不算在分数里，要先分离
+/*游戏运行逻辑*/
+uint32_t Dino_Run(void)
 {
 	Dino_Reset();
 	uint32_t Dino_score = 0;//计分
@@ -373,36 +384,35 @@ uint32_t Dino_Run(void)//注：返回值最高位是一个标志为，不算在�
 	uint8_t Dino_collisionflag = 0;//用于判断是否碰撞
 	while(1)
 	{
-		//场景与跳跃
-		//极速模式
+		/*-------------场景与跳跃--------------*/
+		/*极速模式*/
 		if(mode_sign == 1)
 		{
 			mode_sign = 0;
 			Dino_score = 20000;
 		}
-		//按键控制跳跃类别--------------------------------------------
+		/*按键控制跳跃类别*/
 		uint8_t num=Key_GetNum();
 		if(num == 1)Dino_Runflag = 1;
 		else if(num == 2)Dino_Runflag = 2;
-		else if(num == 3 && mode == 0)
+		else if(num == 3 && mode == 0)//自尽
 		{
-			if(mode == 0)
-			{
-				Dino_score_UI(Dino_score);//这里的score多加了一轮，把显示的值对齐
-				OLED_Update();
-			}
-			return Dino_score;//自尽
+			Dino_score_UI(Dino_score);//这里的score多加了一轮，把显示的值对齐
+			OLED_Update();
+			return Dino_score;
 		}
 		else if(num == 3 && mode == 1)return 0;//极速模式不给分
 		OLED_Clear();
-		//速度对场景填充的影响-------------------------------------------
+		/*速度对场景填充的影响*/
 			//speed=1
+		Dino_scene_UI(Dino_speed);
 		Dino_scene_UI(Dino_speed);
 			//speed=2
 		if(Dino_speed == 2 && Dino_speed_sign == 1)
 		{
 			Dino_speed_sign = 0;
 			OLED_Clear();
+			Dino_scene_UI(Dino_speed);
 			Dino_scene_UI(Dino_speed);
 		}
 		else if(Dino_speed == 2 && Dino_speed_sign == 0)Dino_speed_sign = 1;
@@ -411,28 +421,33 @@ uint32_t Dino_Run(void)//注：返回值最高位是一个标志为，不算在�
 		{
 			OLED_Clear();
 			Dino_scene_UI(Dino_speed);
+			Dino_scene_UI(Dino_speed);
 		}
 		if(Dino_speed >= 4)
 		{
 			OLED_Clear();
+			Dino_scene_UI(Dino_speed);
 			Dino_scene_UI(Dino_speed);
 		}
 		if(Dino_speed >= 5)
 		{
 			OLED_Clear();
 			Dino_scene_UI(Dino_speed);
+			Dino_scene_UI(Dino_speed);
 		}
 		if(Dino_speed >= 6)
 		{
 			OLED_Clear();
+			Dino_scene_UI(Dino_speed);
 			Dino_scene_UI(Dino_speed);
 		}
 		if(Dino_speed >= 7)
 		{
 			OLED_Clear();
 			Dino_scene_UI(Dino_speed);
+			Dino_scene_UI(Dino_speed);
 		}
-		//跳跃与奔跑的处理及速度对跳跃的影响-------------------------------------------------------
+		/*跳跃与奔跑的处理及速度对跳跃的影响*/
 		switch(Dino_Runflag)
 		{
 			case 0://奔跑
@@ -449,21 +464,21 @@ uint32_t Dino_Run(void)//注：返回值最高位是一个标志为，不算在�
 			default:
 				break;
 		}
-		//分数显示(极速模式不显示)----------------------------------------
+		/*分数显示(极速模式不显示)*/
 		if(mode == 0)Dino_score_UI(Dino_score);
-		//背景主题切换----------------------------------------------------
+		/*背景主题切换*/
 		if(Dino_speed == 3)OLED_Reverse();
 		if(Dino_speed == 5)OLED_Reverse();
 		if(Dino_speed == 7 && Dino_background_sign == 1)OLED_Reverse();
-		//结束反色标志与OLED呈现-----------------------------------------------
+		/*结束反色标志与OLED呈现*/
 		if(Dino_speed == 3 || Dino_speed == 5 || (Dino_speed == 7 && Dino_background_sign == 1))Dino_end_reverseflag = 1;
 		else Dino_end_reverseflag = 0;
 		OLED_Update();
-		//碰撞判断--------------------------------------------------------
+		/*碰撞判断*/
 		Dino_collisionflag = Dino_collision_judge(borders);
 		if(Dino_collisionflag == 1 && mode ==0)return Dino_score;
 		else if(Dino_collisionflag == 1 && mode ==1)return 0;//极速模式不给分
-		//动态变化-----------------------------------------------------------
+		/*动态变化*/
 			//分数对速度的转换
 		if(Dino_score >= 1000 && Dino_score < 3000)Dino_speed = 2;
 		if(Dino_score >= 3000 && Dino_score < 6000)Dino_speed = 3;
@@ -472,19 +487,19 @@ uint32_t Dino_Run(void)//注：返回值最高位是一个标志为，不算在�
 		if(Dino_score >= 15000 && Dino_score < 20000)Dino_speed = 6;
 		if(Dino_score >= 20000)Dino_speed = 7;
 			//速度对分数影响
-		Dino_score++;
-		if(Dino_speed == 2 && Dino_speed_sign == 1)Dino_score++;
-		if(Dino_speed >= 3)Dino_score++;
-		if(Dino_speed >= 4)Dino_score++;
-		if(Dino_speed >= 5)Dino_score++;
-		if(Dino_speed >= 6)Dino_score++;
-		if(Dino_speed >= 7)Dino_score++;
+		Dino_score+=2;
+		if(Dino_speed == 2 && Dino_speed_sign == 1)Dino_score+=2;
+		if(Dino_speed >= 3)Dino_score+=2;
+		if(Dino_speed >= 4)Dino_score+=2;
+		if(Dino_speed >= 5)Dino_score+=2;
+		if(Dino_speed >= 6)Dino_score+=2;
+		if(Dino_speed >= 7)Dino_score+=2;
 			//分数对背景切换的影响
 		if(Dino_speed == 7 && Dino_score/5000%2 == 0)Dino_background_sign = 1;
 		else if(Dino_speed == 7 && Dino_score/5000%2 == 1)Dino_background_sign = 0;
 	}
 }
-
+/*游戏结束页逻辑*/
 Page Dino_end_Page(void)
 {
 	Previous_Pageflag = Pageflag;
@@ -530,6 +545,7 @@ Page Dino_end_Page(void)
 		OLED_Update();
 	}
 }
+/*游戏起始页逻辑*/
 Page Dino_begin_Page(void)
 {
 	Previous_Pageflag = Pageflag;
@@ -572,13 +588,13 @@ Page Dino_begin_Page(void)
 		OLED_Update();
 	}
 }
-
+/*极速模式切换*/
 void Dino_mode_tick(void)
 {
 	static uint16_t Dino_modetick = 0;
 	if(Key_GetState() == 1)Dino_modetick++;
 	else Dino_modetick = 0;
-	if(Dino_modetick >= 1000)
+	if(Dino_modetick >= 1000)//长按1s
 	{
 		mode = 1;
 		mode_sign = 1;

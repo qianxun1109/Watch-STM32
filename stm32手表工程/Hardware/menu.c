@@ -240,9 +240,9 @@ void Show_Menu_movingUI(int moveflag,uint8_t previous,uint8_t current)//位置�
 			if(previous < menuflag_max-1/*对齐*/ && 96+location < 128)OLED_ShowImage(96+location,16,32,32,icon_pointers[previous+1]);//位置从3向右移出，current=menuflag_max右边无图不用移
 			if(previous > 1 && -16+location > 0)OLED_ShowImage(-48+location,16,32,32,icon_pointers[current-1]);//位置从左移入到1
 			OLED_Update();
-			location++;
-			if(Menu_speed >= 2)location++;//速度调整的实现
-			if(Menu_speed >= 3)location++;
+			location+=2;
+			if(Menu_speed >= 2)location+=2;//速度调整的实现
+			if(Menu_speed >= 3)location+=2;
 		}
 	}
 	else if(moveflag > 0)
@@ -256,9 +256,9 @@ void Show_Menu_movingUI(int moveflag,uint8_t previous,uint8_t current)//位置�
 			OLED_ShowImage(96+location,16,32,32,icon_pointers[current]);//位置从3到2
 			if(current < menuflag_max-1 && 128+16+location < 128)OLED_ShowImage(128+16+location,16,32,32,icon_pointers[current+1]);//位置从右移入到3
 			OLED_Update();
-			location--;
-			if(Menu_speed >= 2)location--;
-			if(Menu_speed >= 3)location--;
+			location-=2;
+			if(Menu_speed >= 2)location-=2;
+			if(Menu_speed >= 3)location-=2;
 		}
 	}
 }
