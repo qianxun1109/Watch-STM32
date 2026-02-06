@@ -51,8 +51,8 @@ void Show_Menu_timer_movingUI(int moveflag)//+号向下移动（进入）；-号
 				OLED_ShowString(96,48+64+16-location,"重置",OLED_8X16);
 			}
 			OLED_Update();
-			location++;
-			if(Menu_speed >= 2)location++;
+			location+=2;
+			if(Menu_speed >= 2)location+=2;
 			if(Menu_speed >= 3)location+=2;
 		}
 	}
@@ -77,8 +77,8 @@ void Show_Menu_timer_movingUI(int moveflag)//+号向下移动（进入）；-号
 			}
 			OLED_Update();
 			//移速控制
-			location++;
-			if(Menu_speed >= 2)location++;
+			location+=2;
+			if(Menu_speed >= 2)location+=2;
 			if(Menu_speed >= 3)location+=2;
 		}
 	}
@@ -191,8 +191,8 @@ void Show_Menu_light_movingUI(int moveflag)//+号向下移动（进入）；-号
 				OLED_ShowString(73,28+64+16-location,"OFF",OLED_12X24);
 			}
 			OLED_Update();
-			location++;
-			if(Menu_speed >= 2)location++;
+			location+=2;
+			if(Menu_speed >= 2)location+=2;
 			if(Menu_speed >= 3)location+=2;
 		}
 	}
@@ -214,8 +214,8 @@ void Show_Menu_light_movingUI(int moveflag)//+号向下移动（进入）；-号
 				OLED_ShowString(73,28+location,"OFF",OLED_12X24);
 			}
 			OLED_Update();
-			location++;
-			if(Menu_speed >= 2)location++;
+			location+=2;
+			if(Menu_speed >= 2)location+=2;
 			if(Menu_speed >= 3)location+=2;
 		}
 	}
@@ -315,8 +315,8 @@ void Show_Menu_game_movingUI(int moveflag)//+号向下移动（进入）；-号�
 				OLED_ShowString(0,16+64+16-location,"Chrome Dino Run",OLED_8X16);
 			}
 			OLED_Update();
-			location++;
-			if(Menu_speed >= 2)location++;
+			location+=2;
+			if(Menu_speed >= 2)location+=2;
 			if(Menu_speed >= 3)location+=2;
 		}
 	}
@@ -337,8 +337,8 @@ void Show_Menu_game_movingUI(int moveflag)//+号向下移动（进入）；-号�
 				OLED_ShowString(0,16+location,"Chrome Dino Run",OLED_8X16);
 			}
 			OLED_Update();
-			location++;
-			if(Menu_speed >= 2)location++;
+			location+=2;
+			if(Menu_speed >= 2)location+=2;
 			if(Menu_speed >= 3)location+=2;
 		}
 	}
@@ -418,8 +418,8 @@ void Show_Menu_alarm_movingUI(int moveflag)//+号向下移动（进入）；-号
 				OLED_ShowString(0,32+64+16-location,"倒计时",OLED_8X16);
 			}
 			OLED_Update();
-			location++;
-			if(Menu_speed >= 2)location++;
+			location+=2;
+			if(Menu_speed >= 2)location+=2;
 			if(Menu_speed >= 3)location+=2;
 		}
 	}
@@ -441,8 +441,8 @@ void Show_Menu_alarm_movingUI(int moveflag)//+号向下移动（进入）；-号
 				OLED_ShowString(0,32+location,"倒计时",OLED_8X16);
 			}
 			OLED_Update();
-			location++;
-			if(Menu_speed >= 2)location++;
+			location+=2;
+			if(Menu_speed >= 2)location+=2;
 			if(Menu_speed >= 3)location+=2;
 		}
 	}
