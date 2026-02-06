@@ -1,4 +1,4 @@
-# STM32Watch
+# Watch-stm32
 制作一个stm32手表（参考“b站火禾实验室作品”）
 
 version 1.0
