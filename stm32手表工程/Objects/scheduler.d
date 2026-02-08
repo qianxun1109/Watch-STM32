@@ -32,3 +32,5 @@
 .\objects\scheduler.o: .\Hardware\menu.h
 .\objects\scheduler.o: .\Hardware\Menu_game.h
 .\objects\scheduler.o: .\Hardware\Timer.h
+.\objects\scheduler.o: .\Hardware\OLED.h
+.\objects\scheduler.o: .\Hardware\OLED_Data.h

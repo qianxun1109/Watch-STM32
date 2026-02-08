@@ -21,6 +21,7 @@ Page Previous_Pageflag;
 
 int main(void)
 {
+	/*外设初始化*/
 	MyRTC_Init();
 	OLED_Init();
 	Key_Init();
@@ -30,10 +31,27 @@ int main(void)
 	Alarm_Init();
 	AD_Init();
 	//PWM_Init();
-	
-	alarm_set_flag2 = BKP_ReadBackupRegister(BKP_DR2);//上电重建闹钟标志
+	/*备份内容重加载*/
+	alarm_set_flag2 = BKP_ReadBackupRegister(BKP_DR2);//BKP_DR2已经在相应地方和flag2同步置位和清零
 	Menu_speed = BKP_ReadBackupRegister(BKP_DR3);
-	srand(66666666);
+	uint16_t temp_L = BKP_ReadBackupRegister(BKP_DR4);
+	uint16_t temp_H = BKP_ReadBackupRegister(BKP_DR5);
+	RTC_SetAlarm(((uint32_t)temp_H<<16) | (uint32_t)temp_L);
+	/*闹钟失效判断*/
+	if(Alarm_GetCounter() < RTC_GetCounter())alarm_set_flag2 = 0;//如果在掉电时错过了闹钟，则闹钟失效，顺带把alarm_set_flag2手动置零
+	/*待机闹钟唤醒判断*/
+	if(BKP_ReadBackupRegister(BKP_DR6) == 1)
+	{
+		BKP_WriteBackupRegister(BKP_DR6,0);
+		RTC_ClearFlag(RTC_FLAG_ALR);
+		RTC_WaitForLastTask();
+		PWR_ClearFlag(PWR_FLAG_SB);// 清除待机标志位
+		//闹钟响应
+		alarm_set_flag2 = 1;
+		alarm_set_flag = 1;
+	}
+	/*随机种子*/
+	srand(RTC_GetCounter());
 	while (1)
 	{
 		switch(Pageflag)
@@ -90,29 +108,7 @@ int main(void)
 	}
 }
 
-//测试块
+//测试
 //OLED_Clear();
 //OLED_Update();
 //Delay_s(1);
-
-//Page Pageflag = CLOCK;
-//Page Previous_Pageflag;
-
-//int main(void)
-//{
-//	MyRTC_Init();
-//	OLED_Init();
-//	Key_Init();
-//	LED_Init();
-//	Timer_Init();
-//	Scheduler_Init();
-//	Alarm_Init();
-//	AD_Init();
-//	//MPU6050_Init();
-//	
-
-//	while (1)
-//	{
-//		OLED_Printf(0,0,OLED_8X16,"%02d",AD_GetValue());
-//	}
-//}

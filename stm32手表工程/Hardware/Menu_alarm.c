@@ -10,6 +10,7 @@
 #include "Timer.h"
 #include "time.h"
 #include "PWM.h"
+#include "Menu_alarm.h"
 
 extern uint8_t Pageflag;
 extern uint8_t Previous_Pageflag;
@@ -89,9 +90,9 @@ void RTCAlarm_IRQHandler(void)
 	if(RTC_GetITStatus(RTC_IT_ALR)==SET)
 	{
 		alarm_set_flag = 1;//闹钟开始
-		RTC_ClearITPendingBit(RTC_IT_ALR);
+		RTC_ClearITPendingBit(RTC_IT_ALR);//中断挂起位，实际上，ClearITPendingBit和ClearFlag绝大多数情况下处理同一个标志位，只是在函数的意义上做区分
 		RTC_WaitForLastTask();
-		RTC_ClearFlag(RTC_FLAG_ALR);
+		RTC_ClearFlag(RTC_FLAG_ALR);//RTC闹钟事件状标志位
 		RTC_WaitForLastTask();
 		EXTI_ClearITPendingBit(EXTI_Line17);//必须把挂起位给清掉
 	}
@@ -289,7 +290,13 @@ Page Menu_alarm_customize_Page(void)
 			{
 				alarm_set_flag2 = 1;
 				MyAlarm_SetTime();
+				
 				BKP_WriteBackupRegister(BKP_DR2,alarm_set_flag2);//掉电不丢失，要和alarm_set_flag2同步更改
+				
+				uint16_t temp_L = RTC->ALRL;
+				uint16_t temp_H = RTC->ALRH;
+				BKP_WriteBackupRegister(BKP_DR4,temp_L);//复位后第一次读rtc的alr寄存器值始终为0xffffffff，打算利用备份寄存器解决
+				BKP_WriteBackupRegister(BKP_DR5,temp_H);
 				return MENU_ALARM;
 			}
 		}

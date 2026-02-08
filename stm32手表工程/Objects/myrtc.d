@@ -30,3 +30,5 @@
 .\objects\myrtc.o: .\Library\misc.h
 .\objects\myrtc.o: E:\Keil5\ARM\ARMCC\Bin\..\include\time.h
 .\objects\myrtc.o: System\MyRTC.h
+.\objects\myrtc.o: .\Hardware\menu.h
+.\objects\myrtc.o: .\Hardware\Menu_alarm.h

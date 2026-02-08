@@ -39,3 +39,4 @@
 .\objects\menu_alarm.o: Hardware\Timer.h
 .\objects\menu_alarm.o: E:\Keil5\ARM\ARMCC\Bin\..\include\time.h
 .\objects\menu_alarm.o: Hardware\PWM.h
+.\objects\menu_alarm.o: Hardware\Menu_alarm.h

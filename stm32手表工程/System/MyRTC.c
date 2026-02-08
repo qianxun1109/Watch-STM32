@@ -1,10 +1,11 @@
 #include "stm32f10x.h"                  // Device header
 #include <time.h>
 #include "MyRTC.h"
+#include "menu.h"
+#include "Menu_alarm.h"
 
 //修改时间戳：先改MyRTC_Time数组数据，再调用MyRTC_SetTime函数
 
-extern int MyAlarm_time[3];
 int MyRTC_Time[6]={2026,2,6,18,27,0};
 int weekday = 0;
 
@@ -89,15 +90,13 @@ uint32_t Alarm_GetCounter(void)
 //获取闹钟时间
 void Alarm_Readtime(void)
 {
+	RTC_WaitForSynchro();
 	time_t time_cnt;
 	time_cnt = Alarm_GetCounter() + 8*60*60;//时区偏移，实现时间戳与北京时间的对应
-	  
-	struct tm time_date;
-	//由于单片机没有系统时间，也无法区分时区，默认伦敦时间，要手动进行时区偏移
-	time_date = *localtime(&time_cnt);//localtime函数根据当前时间戳返回一个tm类型的结构体指针
-	
-	MyAlarm_time[0]=time_date.tm_hour;
-	MyAlarm_time[1]=time_date.tm_min;
-	MyAlarm_time[2]=time_date.tm_sec;
+	 
+	// 手动解析，和等待时间无关，只要time_cnt正确就解析正确
+    MyAlarm_time[0] = (time_cnt / 3600) % 24;  // 小时
+    MyAlarm_time[1] = (time_cnt % 3600) / 60;  // 分钟
+    MyAlarm_time[2] = time_cnt % 60;           // 秒
 }
 

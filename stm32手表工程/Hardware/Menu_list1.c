@@ -257,13 +257,13 @@ Page Menu_light_Page(void)
 			else if(lightflag == 2)
 			{
 				Menu_light_blink();
-				LED1_ON();
+				//LED1_ON();
 				LED2_ON();
 			}
 			else if(lightflag == 3)
 			{
 				Menu_light_blink();
-				LED1_OFF();
+				//LED1_OFF();
 				LED2_OFF();
 			}
 		}

@@ -7,6 +7,7 @@
 #include "menu.h"
 #include "OLED_Data.h"
 #include "AD.h"
+#include "MyRTC.h"
 
 extern uint8_t Pageflag;
 extern uint8_t Previous_Pageflag;
@@ -18,13 +19,14 @@ float Voltage;
 float Voltage_max = 4.2 * 2/3;//锂电池的满电电压为4.2v
 float Voltage_min = 3.3 * 2/3;//锂电池电压为3.3v时认为电量为0
 /*-----------------------------------首页时钟界面---------------------------------------*/
-uint8_t clock_sign = 0;//0调节模式 1简洁模式
+uint8_t clock_sign = 0;//0菜单模式 1简洁模式
 uint8_t clkflag=1;
+uint8_t clkflag_previous=1;//用于辅助简洁模式的判断
 
 void Clock_tick(void)//用于定时切换简洁模式
 {
 	static uint16_t clock_tick = 0;
-	if(clock_sign == 0 && Pageflag == CLOCK)clock_tick++;//只在保持调节模式并在时钟页面时累计计时
+	if(clock_sign == 0 && Pageflag == CLOCK && clkflag==clkflag_previous)clock_tick++;//只在保持菜单模式and在时钟页面and无操作时累计计时
 	else clock_tick = 0;
 	if(clock_tick > 1000*10)//10s未操作进入简洁模式
 	{
@@ -93,7 +95,7 @@ void Show_Clock_UI(void)//首页时钟UI
 		if(Voltage <= Voltage_min + (Voltage_max - Voltage_min) * 0.02)OLED_ClearArea(114,2,1,6);
 		
 		//闹钟开启标志
-		if(alarm_set_flag2 == 1)OLED_ShowImage(128-16*2,0,16,16,Clock);
+		if(alarm_set_flag2 == 1)OLED_ShowImage(128-16*2-7,0,16,16,Clock);
 	}
 	OLED_Printf(16,16,OLED_12X24,"%02d:%02d:%02d",MyRTC_Time[3],MyRTC_Time[4],MyRTC_Time[5]);
 }
@@ -105,6 +107,7 @@ Page CLK_Page(void)//首页时钟页切换逻辑
 	{
 		//键码变换逻辑
 		uint8_t num=Key_GetNum();//取值后会自动将key_num清零，不会重复
+		clkflag_previous = clkflag;
 		if(num == 1)
 		{
 			clkflag--;
