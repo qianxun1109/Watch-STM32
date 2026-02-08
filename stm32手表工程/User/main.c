@@ -15,6 +15,7 @@
 #include "Menu_alarm.h"
 #include "AD.h"
 #include "PWM.h"
+#include "math.h"
 
 Page Pageflag = CLOCK;
 Page Previous_Pageflag;
@@ -40,7 +41,7 @@ int main(void)
 	/*闹钟失效判断*/
 	if(Alarm_GetCounter() < RTC_GetCounter())alarm_set_flag2 = 0;//如果在掉电时错过了闹钟，则闹钟失效，顺带把alarm_set_flag2手动置零
 	/*待机闹钟唤醒判断*/
-	if(BKP_ReadBackupRegister(BKP_DR6) == 1)
+	if(BKP_ReadBackupRegister(BKP_DR6) == 1 && abs((int)(Alarm_GetCounter() - RTC_GetCounter())) <= 2)
 	{
 		BKP_WriteBackupRegister(BKP_DR6,0);
 		RTC_ClearFlag(RTC_FLAG_ALR);
