@@ -153,6 +153,7 @@ Page CLK_Page(void)//首页时钟页切换逻辑
 /*------------------------------------设置界面--------------------------------------------*/
 
 uint8_t settingflag=1;
+uint8_t settingflag_previous=1;
 
 void Show_Setting_UI(void)
 {
@@ -167,6 +168,7 @@ Page Setting_Page(void)
 	while(1)
 	{
 		uint8_t num=Key_GetNum();//键码变换,得到最新时刻键码
+		settingflag_previous = settingflag;
 		if(num == 1)
 		{
 			settingflag--;
@@ -204,8 +206,8 @@ Page Setting_Page(void)
 	}
 }
 /*-------------------------------------菜单界面---------------------------------------------*/
-
 uint8_t menuflag = 1;
+uint8_t menuflag_previous = 1;
 uint8_t menuflag_max = 5;
 uint8_t Menu_speed = 2;
 
@@ -270,13 +272,13 @@ Page Menu_Page(void)
 {
 	//检测flag变化
 	int moveflag = 0;
-	uint8_t previous, current = menuflag; 
+	uint8_t previous, current = menuflag;
 	
 	Previous_Pageflag = Pageflag;
 	while(1)
 	{
 		uint8_t num=Key_GetNum();
-
+		menuflag_previous = menuflag;
 		if(num == 1)
 		{
 			menuflag--;

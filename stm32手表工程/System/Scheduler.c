@@ -4,6 +4,10 @@
 #include "Menu_game.h"
 #include "Timer.h"
 #include "OLED.h"
+#include "Setting_list1.h"
+
+extern uint8_t Pageflag;
+extern uint8_t Previous_Pageflag;
 
 extern uint8_t alarm_set_flag;
 extern uint8_t alarm_set_flag2;
@@ -21,6 +25,35 @@ task_t tasks[]={0
 
 
 };
+/*长时间无响应进入待机模式*/
+void LongTimeWithoutSwitching_Tcik(void)
+{
+	static uint32_t LongTimeWithoutSwitching_tcik_clock;
+	static uint16_t LongTimeWithoutSwitching_tcik_menu;
+	static uint16_t LongTimeWithoutSwitching_tcik__setting;
+	
+	if(Pageflag == CLOCK && clock_sign == 1 && clkflag_previous == clkflag)LongTimeWithoutSwitching_tcik_clock++;
+	else LongTimeWithoutSwitching_tcik_clock = 0;
+	
+	if(Pageflag == MENU && menuflag == menuflag_previous)LongTimeWithoutSwitching_tcik_menu++;
+	else LongTimeWithoutSwitching_tcik_menu = 0;
+	
+	if(Pageflag == SETTING && settingflag_previous == setting_movespeedflag)LongTimeWithoutSwitching_tcik__setting++;
+	else LongTimeWithoutSwitching_tcik__setting = 0;
+	
+	
+	if(LongTimeWithoutSwitching_tcik_clock > 1000*60*5 || LongTimeWithoutSwitching_tcik_menu > 1000*60 || LongTimeWithoutSwitching_tcik__setting > 1000*60)
+	{
+		LongTimeWithoutSwitching_tcik_clock = 0;
+		LongTimeWithoutSwitching_tcik_menu = 0;
+		LongTimeWithoutSwitching_tcik__setting = 0;
+		OLED_Clear();
+		OLED_Update();
+		BKP_WriteBackupRegister(BKP_DR6,1);//待机标志位
+		PWR_EnterSTANDBYMode();
+	}
+}
+
 /*长按确定键进入待机模式*/
 void Standby_Tick(void)
 {
@@ -33,7 +66,7 @@ void Standby_Tick(void)
 		standby_tick = 0;
 		OLED_Clear();
 		OLED_Update();
-		BKP_WriteBackupRegister(BKP_DR6,1);//手动待机标志位，PWR_FLAG_SB有问题没搞明白
+		BKP_WriteBackupRegister(BKP_DR6,1);//手动待机标志位，PWR_FLAG_SB置位好像有问题
 		PWR_EnterSTANDBYMode();
 	}
 }
@@ -114,6 +147,7 @@ void TIM1_UP_IRQHandler(void)		//<<-----使用TIM1要注意中断名不一样
 		//Key_Shutdown_Tick();//关机长按检测
 		MyAlarm_countdowntime_Tick();//倒计时闹钟响应
 		MyAlarm_customizetime_Tick();//自定义闹钟响应
+		LongTimeWithoutSwitching_Tcik();//长时间无响应进入待机模式
 		
 		TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
 	}

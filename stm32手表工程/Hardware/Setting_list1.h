@@ -6,5 +6,6 @@ Page Setting_movespeed_Page(void);
 uint8_t SetMovespeed(void);
 void Setting_movespeed_UI(void);
 
+extern uint8_t setting_movespeedflag;
 #endif
 

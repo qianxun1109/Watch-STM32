@@ -34,3 +34,4 @@
 .\objects\scheduler.o: .\Hardware\Timer.h
 .\objects\scheduler.o: .\Hardware\OLED.h
 .\objects\scheduler.o: .\Hardware\OLED_Data.h
+.\objects\scheduler.o: .\Hardware\Setting_list1.h
